@@ -1,0 +1,211 @@
+JFDML JFormDesigner: "7.0.3.1.342" Java: "1.8.0_252" encoding: "UTF-8"
+
+new FormModel {
+	"i18n.autoExternalize": true
+	"i18n.bundleName": "VspDataUI"
+	"i18n.keyPrefix": "VspDataUI"
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"title": "VSP Demo v0.1"
+			"resizable": false
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {comp panel1:::p::p, space :::x, comp panel2:::p::p}, seq {comp panel3:::p::p, space :::x, comp panel4:::p::p}}"
+					"$verticalGroup": "par l {seq l {par l:::p {comp panel1:::::x, comp panel2:::::x}, space :::p, par l {comp panel4:::::x, comp panel3:::::x}, space :0:0:p}}"
+				} ) {
+					name: "contentPanel"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq l {space :p:15:p, par l {comp label1::t:p::p, comp label2::t:p::p, comp label3::t:p::p, comp label4::t:p::p, comp label5::t:p::p, comp label11::t:p::p, comp label12::t:p::p}, space :::p, par l {comp filterCombo:::p::p, par l:::p {seq {par t:::p {comp fovField::l:::x, comp decField::l::96:x, comp raField::l:::x, comp magLimitField:::::x}, space :::p, par l {comp label7:::p::p, comp label8:::p::p, comp label9:::p::p, comp label10:::p::p}}, comp objectIdField:::::x, comp catalogCombo::l:p:96:p}}, space :::x}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp label1::b:p::p, comp objectIdField::b:p::p}, par l {seq {space :p:16:p, comp label2:::p::p}, seq {space u:::p, par b {comp raField::b:p::p, comp label7::b:p::p}}}, par l {seq {space :p:16:p, comp label3:::p::p}, seq {space u:::p, par b {comp decField::b:p::p, comp label8::b:p::p}}}, par l {seq {space :p:16:p, comp label4:::p::p}, seq {space u:::p, par b {comp fovField::b:p::p, comp label9::b:p::p}}}, par l {seq {space :p:16:p, comp label5:::p::p}, seq {space u:::p, par b {comp magLimitField::b:p::p, comp label10::b:p::p}}}, space u:::p, par b {comp catalogCombo::b:p::p, comp label11::b:p::p}, space u:::p, par b {comp filterCombo::b:p::p, comp label12::b:p::p}, space :::x}}"
+					} ) {
+						name: "panel1"
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label1"
+							"text": new FormMessage( null, "VspDataUI.label1.text_3" )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "objectIdField"
+							"text": new FormMessage( null, "VspDataUI.objectIdField.text" )
+							"focusCycleRoot": true
+							"background": new java.awt.Color( 255, 255, 255, 255 )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label2"
+							"text": new FormMessage( null, "VspDataUI.label2.text_3" )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "raField"
+							"text": "06:30:32.80"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label3"
+							"text": new FormMessage( null, "VspDataUI.label3.text_3" )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "decField"
+							"text": "+20:40:20.27"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label4"
+							"text": new FormMessage( null, "VspDataUI.label4.text_3" )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "fovField"
+							"text": "60.0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label5"
+							"text": new FormMessage( null, "VspDataUI.label5.text_3" )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "magLimitField"
+							"text": new FormMessage( null, "VspDataUI.magLimitField.text" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label7"
+							"text": new FormMessage( null, "VspDataUI.label7.text_2" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label8"
+							"text": new FormMessage( null, "VspDataUI.label8.text_2" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label9"
+							"text": new FormMessage( null, "VspDataUI.label9.text_2" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label10"
+							"text": new FormMessage( null, "VspDataUI.label10.text_2" )
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "catalogCombo"
+							"model": new javax.swing.DefaultComboBoxModel {
+								selectedItem: "VSP"
+								addElement( "VSP" )
+								addElement( "APASS" )
+							}
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label11"
+							"text": new FormMessage( null, "VspDataUI.label11.text" )
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "filterCombo"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label12"
+							"text": new FormMessage( null, "VspDataUI.label12.text" )
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq {space :0:0:x, comp simbadButton:1::p::p}, seq {par l {comp radecButton:1::p::p, comp cancelButton:1:l:p::p}, space :0:0:x}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp simbadButton:::p::p, space u:::p, comp radecButton:::p::p, space :::x, comp cancelButton:::p::p, space :::p}}"
+					} ) {
+						name: "panel2"
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "simbadButton"
+							"text": new FormMessage( null, "VspDataUI.simbadButton.text" )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "cancelButton"
+							"text": new FormMessage( null, "VspDataUI.cancelButton.text" )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "radecButton"
+							"text": "Save radec"
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq l {par l {seq {space :p:25:p, par l {comp raLabel::t:p::p, comp decLabel::t:p::p}}, seq l {space :::p, comp idLabel:::p::p}}, space :::p, par l {comp simbadIdLabel::l:p::p, comp simbadRaLabel::l:p::p, comp simbadDecLabel:::p::p}, space :0:24:x}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp simbadIdLabel::b:p::p, comp idLabel::b:p::p}, space u:::p, par b {comp raLabel::b:p::p, comp simbadRaLabel::b:p::p}, space u:::p, par b {comp decLabel::b:p::p, comp simbadDecLabel::b:p::p}, space ::52:x}}"
+					} ) {
+						name: "panel3"
+						"border": new javax.swing.border.TitledBorder( "i18nKey=VspDataUI.panel3.border" )
+						"preferredSize": new java.awt.Dimension( 190, 164 )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "idLabel"
+							"text": new FormMessage( null, "VspDataUI.idLabel.text_2" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "raLabel"
+							"text": new FormMessage( null, "VspDataUI.raLabel.text" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "decLabel"
+							"text": new FormMessage( null, "VspDataUI.decLabel.text" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "simbadIdLabel"
+							"text": "."
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "simbadRaLabel"
+							"text": "HH:MM:SS.SS"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "simbadDecLabel"
+							"text": "."
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp idLabel2::t:p::p, comp idLabel3::t:p::p, comp idLabel4::t:p::p, comp idLabel5::t:p::p}, space :::p, par l {comp simbadMagBLabel::l:p::p, comp simbadMagVLabel::l:p::p, comp simbadMagRLabel::l:p::p, comp simbadMagILabel::l:p::p}, space ::118:x}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp idLabel2::b:p::p, comp simbadMagBLabel::b:p::p}, space u:::p, par b {comp idLabel3::b:p::p, comp simbadMagVLabel::b:p::p}, space u:::p, par b {comp idLabel4::b:p::p, comp simbadMagRLabel::b:p::p}, space u:::p, par b {comp idLabel5::b:p::p, comp simbadMagILabel::b:p::p}, space ::23:x}}"
+					} ) {
+						name: "panel4"
+						"border": new javax.swing.border.TitledBorder( "i18nKey=VspDataUI.panel4.border" )
+						"preferredSize": new java.awt.Dimension( 190, 164 )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "idLabel2"
+							"text": new FormMessage( null, "VspDataUI.idLabel2.text" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "idLabel3"
+							"text": new FormMessage( null, "VspDataUI.idLabel3.text" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "idLabel4"
+							"text": new FormMessage( null, "VspDataUI.idLabel4.text" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "idLabel5"
+							"text": new FormMessage( null, "VspDataUI.idLabel5.text" )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "simbadMagBLabel"
+							"text": "."
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "simbadMagVLabel"
+							"text": "."
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "simbadMagRLabel"
+							"text": "."
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "simbadMagILabel"
+							"text": "."
+						} )
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 30, 15 )
+			"size": new java.awt.Dimension( 335, 394 )
+		} )
+	}
+}
