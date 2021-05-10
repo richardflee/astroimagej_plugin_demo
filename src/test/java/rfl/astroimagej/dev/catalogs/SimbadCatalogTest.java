@@ -9,13 +9,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import rfl.astroimagej.dev.queries.CatalogQuery;
-import rfl.astroimagej.dev.queries.QueryResult;
+import rfl.astroimagej.dev.queries.SimbadResult;
 import rfl.astroimagej.exceptions.SimbadNotFoundException;
 
 class SimbadCatalogTest {
 	private SimbadCatalog simbad;
 	private CatalogQuery query;
-	private QueryResult result;
+	private SimbadResult result;
 	
 	private final double epsilon = 1.0e-5;
 

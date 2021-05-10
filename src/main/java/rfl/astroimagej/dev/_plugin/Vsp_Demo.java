@@ -6,7 +6,6 @@ import javax.swing.UIManager;
 
 import ij.plugin.PlugIn;
 import rfl.astroimagej.dev.catalog_ui.CatalogFormUI;
-import rfl.astroimagej.dev.properties.PropertiesReadWriter;
 
 /**
  * Demonstrates AstroImageJ plugin to import user-specified VSP (Variable Star Plotter) data and
@@ -33,7 +32,7 @@ public class Vsp_Demo implements PlugIn  {
 		
 		// configure requestHandler for catalog download user selection
 		EventQueue.invokeLater(() -> {
-			new CatalogFormUI(new PropertiesReadWriter());
+			new CatalogFormUI();
 		});
 	}
 	
@@ -45,7 +44,7 @@ public class Vsp_Demo implements PlugIn  {
 		}
 
 		EventQueue.invokeLater(() -> {
-			new CatalogFormUI(new PropertiesReadWriter());
+			new CatalogFormUI();
 		});
 	}
 }

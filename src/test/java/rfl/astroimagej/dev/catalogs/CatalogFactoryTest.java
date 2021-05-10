@@ -17,32 +17,32 @@ class CatalogFactoryTest {
 
 	private final double epsilon = 1.0e-5;
 	
-	// SIMBAD vega query copied from SimbadCatalogTest
-	@DisplayName("Confirm that a SIMBAD vega query runs when selected in CatalogFactory")
-	@Test
-	void CatalogFactory_SimbadVegaQuery_ReturnsVegaResult() throws Exception {
-		// configure factory to run simbad vega query
-		AstroCatalog catalog = CatalogFactory.createCatalog(CatalogMagType.SIMBAD);
-		CatalogQuery query = new CatalogQuery();
-		query.setObjectId("vega");
-		QueryResult result = catalog.runQuery(query);
-
-		// delete leading '*' returned in simbad vega name & match objectId
-		String rx = "[^a-zA-Z0-9\\s\\w\\-\\.]";
-		String s1 = result.getSimbadId().replaceAll(rx, "").trim();
-		String s2 = "alf Lyr".replaceAll(rx, "").trim();
-		assertEquals(s2, s1);
-
-		// Ra & Dec
-		assertEquals(18.61565, result.getSimbadRaHr(), epsilon);
-		assertEquals(38.78369, result.getSimbadDecDeg(), epsilon);
-
-		// mag B, V, Rc, Ic data
-		assertEquals(0.03, result.getMagB(), epsilon);
-		assertEquals(0.03, result.getMagV(), epsilon);
-		assertEquals(0.07, result.getMagR(), epsilon);
-		assertEquals(0.10, result.getMagI(), epsilon);
-	}
+//	// SIMBAD vega query copied from SimbadCatalogTest
+//	@DisplayName("Confirm that a SIMBAD vega query runs when selected in CatalogFactory")
+//	@Test
+//	void CatalogFactory_SimbadVegaQuery_ReturnsVegaResult() throws Exception {
+//		// configure factory to run simbad vega query
+//		AstroCatalog catalog = CatalogFactory.createCatalog(CatalogMagType.SIMBAD);
+//		CatalogQuery query = new CatalogQuery();
+//		query.setObjectId("vega");
+//		QueryResult result = catalog.runQuery(query);
+//
+//		// delete leading '*' returned in simbad vega name & match objectId
+//		String rx = "[^a-zA-Z0-9\\s\\w\\-\\.]";
+//		String s1 = result.getSimbadId().replaceAll(rx, "").trim();
+//		String s2 = "alf Lyr".replaceAll(rx, "").trim();
+//		assertEquals(s2, s1);
+//
+//		// Ra & Dec
+//		assertEquals(18.61565, result.getSimbadRaHr(), epsilon);
+//		assertEquals(38.78369, result.getSimbadDecDeg(), epsilon);
+//
+//		// mag B, V, Rc, Ic data
+//		assertEquals(0.03, result.getMagB(), epsilon);
+//		assertEquals(0.03, result.getMagV(), epsilon);
+//		assertEquals(0.07, result.getMagR(), epsilon);
+//		assertEquals(0.10, result.getMagI(), epsilon);
+//	}
 
 	// VSP vega query copied from VspCatalogTest
 	@DisplayName("Confirm that a VSP vega query runs when selected in CatalogFactory")

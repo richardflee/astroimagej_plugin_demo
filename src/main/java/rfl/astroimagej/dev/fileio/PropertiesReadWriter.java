@@ -1,4 +1,4 @@
-package rfl.astroimagej.dev.properties;
+package rfl.astroimagej.dev.fileio;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,11 +27,11 @@ public class PropertiesReadWriter {
 	 * 
 	 * @param event event object encapsulating form data inputs
 	 */
-	public void writeVspProperties(CatalogQuery data) {		
+	public void writeCatalogUiProperties(CatalogQuery data) {		
 		// update properties file with FormData values
 		// display error dialog in case of file write error
 		// CatalogQuery cq = data;
-		try (OutputStream output = new FileOutputStream(PropertiesReadWriter.getPropsPath())) {
+		try (OutputStream output = new FileOutputStream(PropertiesReadWriter.getPropertiesPath())) {
 			Properties prop = new Properties();
 			
 			// on-line catalog selected
@@ -48,7 +48,7 @@ public class PropertiesReadWriter {
 
 			prop.store(output, null);
 		} catch (IOException io) {
-			String msg = "Failed to update properties file: \n" + PropertiesReadWriter.getPropsPath();
+			String msg = "Failed to update properties file: \n" + PropertiesReadWriter.getPropertiesPath();
 			JOptionPane.showMessageDialog(null, msg, "Properties File", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
@@ -58,16 +58,16 @@ public class PropertiesReadWriter {
 	 * 
 	 * @return CatalogRequest event encapsulating chartUI field values
 	 */
-	public CatalogQuery readVspProperties() {
+	public CatalogQuery readCatalogUiProperties() {
 		// if necessary, create a new, properties file with default target data for WASP-12
-		File file = new File(PropertiesReadWriter.getPropsPath());
+		File file = new File(PropertiesReadWriter.getPropertiesPath());
 		if (!file.exists()) {
-			createVspFile();
+			createPropertiesFile();
 		}
 		
 		// import properties data and return encapsulated data in FormData object
 		CatalogQuery data = new CatalogQuery();
-		try (InputStream input = new FileInputStream(PropertiesReadWriter.getPropsPath())) {
+		try (InputStream input = new FileInputStream(PropertiesReadWriter.getPropertiesPath())) {
 			Properties prop = new Properties();
 			prop.load(input);
 			
@@ -94,7 +94,7 @@ public class PropertiesReadWriter {
 			data.setMagBand(prop.getProperty("filter").toString());
 			
 		} catch (IOException ex) {
-			String msg = "Failed to read properties file: \n" + PropertiesReadWriter.getPropsPath();
+			String msg = "Failed to read properties file: \n" + PropertiesReadWriter.getPropertiesPath();
 			JOptionPane.showMessageDialog(null, msg, "Properties File", JOptionPane.INFORMATION_MESSAGE);
 		}
 		return data;
@@ -105,7 +105,7 @@ public class PropertiesReadWriter {
 	 * 
 	 * @return path properties file path 
 	 */
-	public static String getPropsPath() {
+	public static String getPropertiesPath() {
 		String homePath = Paths.get(System.getProperty("user.home")).toAbsolutePath().toString();
 		return Paths.get(homePath, ".astroimagej", "vspdemo.properties").toString();
 	}
@@ -113,13 +113,13 @@ public class PropertiesReadWriter {
 	/*
 	 * Attempts to create new vspdemo.properties file. Dialog reports outcome
 	 */
-	private void createVspFile() {
+	private void createPropertiesFile() {
 		// create FormData object with default (WASP-12) values
 		// save as ../.astroimagej/vspdemo.properties
 		CatalogQuery formData = new CatalogQuery();		
-		writeVspProperties(formData);
+		writeCatalogUiProperties(formData);
 		
-		String msg = "Creating new properties file: \n" + PropertiesReadWriter.getPropsPath();
+		String msg = "Creating new properties file: \n" + PropertiesReadWriter.getPropertiesPath();
 		msg += "\n Loading default data for target WASP-12";		
 		JOptionPane.showMessageDialog(null, msg, "Properties File", JOptionPane.INFORMATION_MESSAGE);
 	}

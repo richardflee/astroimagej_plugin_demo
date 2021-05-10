@@ -112,10 +112,10 @@ public class VspCatalog implements AstroCatalog {
 	// compile VSP API url
 	private String getUrl() {
 		String url = "https://app.aavso.org/vsp/api/chart/?format=json"; // VSP header
-		url += "&fov=" + String.format("%.1f", query.getFovAmin()); // fov nn.n (arcmin)
-		url += "&maglimit=" + String.format("%.1f", query.getMagLimit()); // magLimit nn.n (mag)
-		url += "&ra=" + String.format("%.5f", query.getRaHr() * 15.0); // ra nnn.nnnnn (0 to 360 deg)
-		url += "&dec=" + String.format("%.5f", query.getDecDeg()); // dec nn.nnnnn (0 to ± 90 deg)
+		url +=  String.format("&fov=%.1f", query.getFovAmin()); // fov nn.n (arcmin)
+		url += String.format("&maglimit=%.1f", query.getMagLimit()); // magLimit nn.n (mag)
+		url += String.format("&ra=%.5f", query.getRaHr() * 15.0); // ra nnn.nnnnn (0 to 360 deg)
+		url += String.format("&dec=%.5f", query.getDecDeg()); // dec nn.nnnnn (0 to ± 90 deg)
 		return url;
 	}
 

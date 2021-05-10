@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
 
 import rfl.astroimagej.dev.enums.SimbadUrlType;
 import rfl.astroimagej.dev.queries.CatalogQuery;
-import rfl.astroimagej.dev.queries.QueryResult;
+import rfl.astroimagej.dev.queries.SimbadResult;
 import rfl.astroimagej.exceptions.SimbadNotFoundException;
 
 /**
@@ -39,7 +39,7 @@ import rfl.astroimagej.exceptions.SimbadNotFoundException;
  * SIMBAD reference: http://simbad.u-strasbg.fr/guide/sim-url.htx.
  * </p>
  */
-public class SimbadCatalog implements AstroCatalog {
+public class SimbadCatalog {
 	private DocumentBuilder builder;
 	private CatalogQuery query;	
 	private final String NO_DATA = "*****";
@@ -77,11 +77,10 @@ public class SimbadCatalog implements AstroCatalog {
 	 * @throws SimbadNotFoundException thorws this exception if user input name is not 
 	 *  		identified in the Simbad database
 	 */
-	@Override
-	public QueryResult runQuery(CatalogQuery query) throws SimbadNotFoundException {
+	public SimbadResult runQuery(CatalogQuery query) throws SimbadNotFoundException {
 		
 		this.query = query;		
-		QueryResult result = new QueryResult(query.getObjectId());
+		SimbadResult result = new SimbadResult(query.getObjectId());
 		
 		// search database for user input object name
 		// throws SimbadNotFoundException if no match found
@@ -193,7 +192,7 @@ public class SimbadCatalog implements AstroCatalog {
 		query.setObjectId("vega");
 		
 		
-		QueryResult result =  simbad.runQuery(query);		
+		SimbadResult result =  simbad.runQuery(query);		
 		System.out.println(result.toString());
 		
 	}

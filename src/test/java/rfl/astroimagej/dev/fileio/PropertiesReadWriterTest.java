@@ -1,10 +1,9 @@
-package rfl.astroimagej.dev.properties;
+package rfl.astroimagej.dev.fileio;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,27 +28,24 @@ class PropertiesReadWriterTest {
 		rw = new PropertiesReadWriter();
 	}
 
-	@AfterAll
-	static void tearDownAfterClass() throws Exception {
-	}
 
 	@DisplayName("Import default values from .properties file into base fData0")
 	@BeforeEach
 	void setUp() throws Exception {
 		fData0 = new CatalogQuery();
-		rw.writeVspProperties(fData0);
+		rw.writeCatalogUiProperties(fData0);
 	}
 
 	@DisplayName("Save default values in .properties file")
 	@AfterEach
 	void tearDown() throws Exception {
-		rw.writeVspProperties(fData0);
+		rw.writeCatalogUiProperties(fData0);
 	}
 
 	@DisplayName("Test FormData object is unchanged after write/read cycle")
 	@Test
 	void testProperties_ReadWrite_EndToEnd() {
-		CatalogQuery fData1 = rw.readVspProperties();
+		CatalogQuery fData1 = rw.readCatalogUiProperties();
 		assertTrue(fData1.getObjectId().equals(fData0.getObjectId()));
 		
 		assertEquals(fData1.getRaHr(), fData0.getRaHr(), epsilon);
@@ -75,8 +71,8 @@ class PropertiesReadWriterTest {
 		fData1.setMagBand("SR");
 		
 		// test: write fData1 & read fData2
-		rw.writeVspProperties(fData1);
-		CatalogQuery fData2 = rw.readVspProperties();
+		rw.writeCatalogUiProperties(fData1);
+		CatalogQuery fData2 = rw.readCatalogUiProperties();
 		
 		// *** confirm rwrite/read fData2
 		// match strings

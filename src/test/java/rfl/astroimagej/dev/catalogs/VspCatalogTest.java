@@ -64,7 +64,7 @@ class VspCatalogTest {
 	
 	@DisplayName("Vsp V-mag query Vega matches on-line photometry table")
 	@Test
-	void MatchVspQuery_VegaVMag_PhotometryTable_Succeeds() {
+	void matchVspQuery_VegaVMag_PhotometryTable_Succeeds() {
 		vegaQuery.setMagBand("V");
 		result = vsp.runQuery(vegaQuery);
 		List<FieldObject> fieldObjects = result.getFieldObjects();
@@ -87,7 +87,7 @@ class VspCatalogTest {
 	
 	@DisplayName("Vsp Rc-mag query Vega matches on-line photometry table")
 	@Test
-	void MatchVspQuery_VegaRcMag_PhotometryTable_Succeeds() {
+	void matchVspQuery_VegaRcMag_PhotometryTable_Succeeds() {
 		vegaQuery.setMagBand("Rc");
 		result = vsp.runQuery(vegaQuery);
 		List<FieldObject> fieldObjects = result.getFieldObjects();
@@ -110,7 +110,7 @@ class VspCatalogTest {
 	
 	@DisplayName("Vsp Ic-mag query Vega matches on-line photometry table")
 	@Test
-	void MatchVspQuery_VegaIcMag_PhotometryTable_Succeeds() {
+	void matchVspQuery_VegaIcMag_PhotometryTable_Succeeds() {
 		vegaQuery.setMagBand("Ic");
 		result = vsp.runQuery(vegaQuery);
 		List<FieldObject> fieldObjects = result.getFieldObjects();
@@ -134,7 +134,7 @@ class VspCatalogTest {
 	
 	@DisplayName("Vsp B-mag query wasp-12 matches on-line photometry table")
 	@Test
-	void MatchVspQuery_WaspBMag_PhotometryTable_Succeeds() {
+	void matchVspQuery_WaspBMag_PhotometryTable_Succeeds() {
 		waspQuery.setMagBand("B");
 		result = vsp.runQuery(waspQuery);
 		List<FieldObject> fieldObjects = result.getFieldObjects();
@@ -157,7 +157,7 @@ class VspCatalogTest {
 	
 	@DisplayName("Vsp V-mag query wasp-12 matches on-line photometry table")
 	@Test
-	void MatchVspQuery_WaspVMag_PhotometryTable_Succeeds() {
+	void matchVspQuery_WaspVMag_PhotometryTable_Succeeds() {
 		waspQuery.setMagBand("V");
 		result = vsp.runQuery(waspQuery);
 		List<FieldObject> fieldObjects = result.getFieldObjects();
@@ -180,7 +180,7 @@ class VspCatalogTest {
 	
 	@DisplayName("Vsp Rc-mag query wasp-12 matches on-line photometry table")
 	@Test
-	void MatchVspQuery_WaspRcMag_PhotometryTable_Succeeds() {
+	void matchVspQuery_WaspRcMag_PhotometryTable_Succeeds() {
 		waspQuery.setMagBand("Rc");
 		result = vsp.runQuery(waspQuery);
 		List<FieldObject> fieldObjects = result.getFieldObjects();
@@ -203,7 +203,7 @@ class VspCatalogTest {
 	
 	@DisplayName("Vsp Ic-mag query wasp-12 matches on-line photometry table")
 	@Test
-	void MatchVspQuery_WaspIcMag_PhotometryTable_Succeeds() {
+	void matchVspQuery_WaspIcMag_PhotometryTable_Succeeds() {
 		waspQuery.setMagBand("Ic");
 		result = vsp.runQuery(waspQuery);
 		List<FieldObject> fieldObjects = result.getFieldObjects();
@@ -226,7 +226,7 @@ class VspCatalogTest {
 	
 	@DisplayName("Vsp query wasp-12 no results on-line photometry table")
 	@Test
-	void VspQuery_PhotometryTable_NoData() {
+	void vspQuery_PhotometryTable_NoData() {
 		// set fov to 1 amin => no field stars found
 		waspQuery.setFovAmin(1.0);
 		waspQuery.setMagBand("Ic");

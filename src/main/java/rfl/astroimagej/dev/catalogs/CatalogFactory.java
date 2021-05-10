@@ -1,5 +1,7 @@
 package rfl.astroimagej.dev.catalogs;
 
+import javax.swing.JOptionPane;
+
 import rfl.astroimagej.dev.enums.CatalogMagType;
 
 public class CatalogFactory {
@@ -8,13 +10,13 @@ public class CatalogFactory {
 		AstroCatalog catalog = null;
 		switch (catalogType) {
 		case SIMBAD:
-			catalog = new SimbadCatalog();
 			break;
 		case VSP:
 			catalog = new VspCatalog();
 			break;
 		case APASS:
-			System.out.println("APASS not implemented");
+			String msg = "APASS not implemented";
+			JOptionPane.showMessageDialog(null, msg, "SIMBAD Query Error", JOptionPane.INFORMATION_MESSAGE);
 			break;
 		}
 		return catalog;
