@@ -9,10 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import rfl.astroimagej.dev.enums.CatalogMagType;
-import rfl.astroimagej.dev.queries.CatalogQuery;
-import rfl.astroimagej.dev.queries.FieldObject;
-import rfl.astroimagej.dev.queries.QueryResult;
+import rfl.astroimagej.dev.enums.CatalogType;
 
 class VspCatalogTest {
 	private VspCatalog vsp;
@@ -27,6 +24,7 @@ class VspCatalogTest {
 		vsp = new VspCatalog();
 		
 		waspQuery = new CatalogQuery();
+		waspQuery.setCatalogType(CatalogType.VSP);
 		
 		vegaQuery = new CatalogQuery();
 		vegaQuery.setObjectId("vega");
@@ -34,7 +32,7 @@ class VspCatalogTest {
 		vegaQuery.setDecDeg(38.78369);
 		vegaQuery.setFovAmin(60.0);
 		vegaQuery.setMagLimit(16.0);
-		vegaQuery.setCatalogType(CatalogMagType.VSP);
+		vegaQuery.setCatalogType(CatalogType.VSP);
 		vegaQuery.setMagBand("B");		
 	}
 

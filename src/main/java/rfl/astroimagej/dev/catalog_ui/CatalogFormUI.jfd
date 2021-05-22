@@ -14,8 +14,8 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {comp panel1:::p::p, space :::x, comp panel2:::p::p}, seq {comp panel3:::p::p, space :::x, comp panel4:::p::p}}"
-					"$verticalGroup": "par l {seq l {par l:::p {comp panel1:::::x, comp panel2:::::x}, space :::p, par l {comp panel4:::::x, comp panel3:::::x}, space :0:0:p}}"
+					"$horizontalGroup": "par l {seq t {par l:::p {comp panel1:::::x, comp panel3::::272:x}, space s:::p, par l {comp panel2:1::p::p, seq {space :0:0:x, comp panel4:1::p:116:p}}}}"
+					"$verticalGroup": "par l {seq l {par l {comp panel1:::p::p, comp panel2:::::x}, space :::p, par l {comp panel4:::p:151:p, comp panel3::::151:x}, space :::x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
@@ -32,6 +32,7 @@ new FormModel {
 							"text": new FormMessage( null, "VspDataUI.objectIdField.text" )
 							"focusCycleRoot": true
 							"background": new java.awt.Color( 255, 255, 255, 255 )
+							"toolTipText": new FormMessage( null, "VspDataUI.objectIdField.toolTipText" )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label2"
@@ -40,6 +41,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "raField"
 							"text": "06:30:32.80"
+							"toolTipText": new FormMessage( null, "VspDataUI.raField.toolTipText" )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label3"
@@ -48,6 +50,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "decField"
 							"text": "+20:40:20.27"
+							"toolTipText": new FormMessage( null, "VspDataUI.decField.toolTipText" )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label4"
@@ -56,6 +59,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "fovField"
 							"text": "60.0"
+							"toolTipText": new FormMessage( null, "VspDataUI.fovField.toolTipText" )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label5"
@@ -64,6 +68,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "magLimitField"
 							"text": new FormMessage( null, "VspDataUI.magLimitField.text" )
+							"toolTipText": new FormMessage( null, "VspDataUI.magLimitField.toolTipText" )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label7"
@@ -108,30 +113,38 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {seq {space :0:0:x, comp simbadButton:1::p::p}, seq {par l {comp radecButton:1::p::p, comp cancelButton:1:l:p::p}, space :0:0:x}}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, comp simbadButton:::p::p, space u:::p, comp radecButton:::p::p, space :::x, comp cancelButton:::p::p, space :::p}}"
+						"$horizontalGroup": "par l {seq l {space :::p, par l {comp saveButton::::92:x, comp catalogButton::l::92:x, comp simbadButton::::92:x, comp cancelButton::l::92:x}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp simbadButton:::p::p, space u:::p, comp catalogButton:::p::p, space u:::p, comp saveButton:::p::p, space :::x, comp cancelButton:::p::p, space :::p}}"
 					} ) {
 						name: "panel2"
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "simbadButton"
 							"text": new FormMessage( null, "VspDataUI.simbadButton.text" )
+							"toolTipText": new FormMessage( null, "VspDataUI.simbadButton.toolTipText" )
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "cancelButton"
 							"text": new FormMessage( null, "VspDataUI.cancelButton.text" )
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "radecButton"
-							"text": "Save radec"
+							name: "catalogButton"
+							"text": "Catalog"
+							"toolTipText": new FormMessage( null, "VspDataUI.catalogButton.toolTipText" )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "saveButton"
+							"text": "Save"
+							"toolTipText": new FormMessage( null, "VspDataUI.saveButton.toolTipText" )
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {par l {seq {space :p:25:p, par l {comp raLabel::t:p::p, comp decLabel::t:p::p}}, seq l {space :::p, comp idLabel:::p::p}}, space :::p, par l {comp simbadIdLabel::l:p::p, comp simbadRaLabel::l:p::p, comp simbadDecLabel:::p::p}, space :0:24:x}}"
-						"$verticalGroup": "par l {seq l {space :::p, par b {comp simbadIdLabel::b:p::p, comp idLabel::b:p::p}, space u:::p, par b {comp raLabel::b:p::p, comp simbadRaLabel::b:p::p}, space u:::p, par b {comp decLabel::b:p::p, comp simbadDecLabel::b:p::p}, space ::52:x}}"
+						"$horizontalGroup": "par l {seq l {par l {seq {space :p:25:p, par l {comp raLabel::t:p::p, comp decLabel::t:p::p}}, seq l {space :::p, comp idLabel:::p::p}}, space :::p, par l {comp simbadIdLabel::l:p::p, comp simbadRaLabel::l:p::p, comp simbadDecLabel:::p::p}, space :0:106:x}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp simbadIdLabel::b:p::p, comp idLabel::b:p::p}, space u:::p, par b {comp raLabel::b:p::p, comp simbadRaLabel::b:p::p}, space u:::p, par b {comp decLabel::b:p::p, comp simbadDecLabel::b:p::p}, space :::x}}"
 					} ) {
 						name: "panel3"
 						"border": new javax.swing.border.TitledBorder( "i18nKey=VspDataUI.panel3.border" )
 						"preferredSize": new java.awt.Dimension( 190, 164 )
+						"toolTipText": new FormMessage( null, "VspDataUI.panel3.toolTipText" )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "idLabel"
 							"text": new FormMessage( null, "VspDataUI.idLabel.text_2" )
@@ -154,16 +167,17 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "simbadDecLabel"
-							"text": "."
+							"text": "DD:MM:SS.SS"
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {comp idLabel2::t:p::p, comp idLabel3::t:p::p, comp idLabel4::t:p::p, comp idLabel5::t:p::p}, space :::p, par l {comp simbadMagBLabel::l:p::p, comp simbadMagVLabel::l:p::p, comp simbadMagRLabel::l:p::p, comp simbadMagILabel::l:p::p}, space ::118:x}}"
-						"$verticalGroup": "par l {seq l {space :::p, par b {comp idLabel2::b:p::p, comp simbadMagBLabel::b:p::p}, space u:::p, par b {comp idLabel3::b:p::p, comp simbadMagVLabel::b:p::p}, space u:::p, par b {comp idLabel4::b:p::p, comp simbadMagRLabel::b:p::p}, space u:::p, par b {comp idLabel5::b:p::p, comp simbadMagILabel::b:p::p}, space ::23:x}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp idLabel2::t:p::p, comp idLabel3::t:p::p, comp idLabel4::t:p::p, comp idLabel5::t:p::p}, space :::p, par l {comp simbadMagBLabel::l:p::p, comp simbadMagVLabel::l:p::p, comp simbadMagRLabel::l:p::p, comp simbadMagILabel::l:p::p}, space ::44:x}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp idLabel2::b:p::p, comp simbadMagBLabel::b:p::p}, space u:::p, par b {comp idLabel3::b:p::p, comp simbadMagVLabel::b:p::p}, space u:::p, par b {comp idLabel4::b:p::p, comp simbadMagRLabel::b:p::p}, space u:::p, par b {comp idLabel5::b:p::p, comp simbadMagILabel::b:p::p}, space :::x}}"
 					} ) {
 						name: "panel4"
 						"border": new javax.swing.border.TitledBorder( "i18nKey=VspDataUI.panel4.border" )
 						"preferredSize": new java.awt.Dimension( 190, 164 )
+						"toolTipText": new FormMessage( null, "VspDataUI.panel4.toolTipText" )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "idLabel2"
 							"text": new FormMessage( null, "VspDataUI.idLabel2.text" )
@@ -205,7 +219,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 30, 15 )
-			"size": new java.awt.Dimension( 335, 394 )
+			"size": new java.awt.Dimension( 346, 394 )
 		} )
 	}
 }

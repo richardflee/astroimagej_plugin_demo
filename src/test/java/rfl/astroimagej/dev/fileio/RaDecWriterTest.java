@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +18,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import rfl.astroimagej.dev.catalogs.CatalogQuery;
+import rfl.astroimagej.dev.catalogs.QueryResult;
 import rfl.astroimagej.dev.catalogs.VspCatalog;
-import rfl.astroimagej.dev.enums.CatalogMagType;
-import rfl.astroimagej.dev.queries.CatalogQuery;
-import rfl.astroimagej.dev.queries.QueryResult;
+import rfl.astroimagej.dev.enums.CatalogType;
 
 class RaDecWriterTest {
 	// wasp & custom vega catalog, query & result
@@ -29,11 +30,9 @@ class RaDecWriterTest {
 	private static CatalogQuery vegaQuery;
 	private static QueryResult waspResult;
 	private static QueryResult vegaResult;
-	private static RaDecWriter radecWriter;
+	private static RaDecFileWriter radecWriter;
 
 	// filenames and paths
-	private static String waspFilename = "";
-	private static String vegaFilename = "";
 	private static File waspFile = null;
 	private static File vegaFile = null;
 
@@ -46,38 +45,40 @@ class RaDecWriterTest {
 	static void setUpBeforeClass() throws Exception {
 		// vsp catalog
 		catalog = new VspCatalog();
-		radecWriter = new RaDecWriter();
+		radecWriter = new RaDecFileWriter();
 
 		// default wasp12 & custom vega queries
 		waspQuery = new CatalogQuery();
+		waspQuery.setCatalogType(CatalogType.VSP);
+		
 		vegaQuery = new CatalogQuery();
-
 		vegaQuery.setObjectId("vega");
 		vegaQuery.setRaHr(18.61565);
 		vegaQuery.setDecDeg(38.78369);
 		vegaQuery.setFovAmin(50.0);
 		vegaQuery.setMagLimit(16.0);
-		vegaQuery.setCatalogType(CatalogMagType.VSP);
+		vegaQuery.setCatalogType(CatalogType.VSP);
 		vegaQuery.setMagBand("B");
 
 		waspResult = catalog.runQuery(waspQuery);
 		vegaResult = catalog.runQuery(vegaQuery);
 
-		// filename format <objectid>.<magband>.radec.txt
-		waspFilename = String.format("%s.%s.radec.txt", waspQuery.getObjectId(), waspQuery.getMagBand());
-		vegaFilename = String.format("%s.%s.radec.txt", vegaQuery.getObjectId(), vegaQuery.getMagBand());
+		waspFile =  RaDecFileWriter.getFile(waspQuery, "radec.txt");
+		vegaFile = RaDecFileWriter.getFile(vegaQuery, "radec.txt");
+		
+		RaDecFileWriter.getFile(waspQuery, "fits").delete();
+		RaDecFileWriter.getFile(vegaQuery, "fits").delete();
+		
+		System.out.println("wasp :" + waspFile.delete());
+		System.out.println("vega: " + vegaFile.delete());
 
-		waspFile = new File(new File(System.getProperty("user.dir"), "radec"), waspFilename);
-		vegaFile = new File(new File(System.getProperty("user.dir"), "radec"), vegaFilename);
-
-		// wrtite radec files
-		radecWriter.writeRaDecFile(waspQuery, waspResult);
-		radecWriter.writeRaDecFile(vegaQuery, vegaResult);
+		// write radec files
+		System.out.println(radecWriter.writeRaDecFile(waspQuery, waspResult));
+		System.out.println(radecWriter.writeRaDecFile(vegaQuery, vegaResult));
 	}
 	
 	// true if daat matches any line in waspLines list
 	private boolean waspFinder(String data) {
-		boolean b = false;
 		for (String line : waspLines) {
 			if (line.equalsIgnoreCase(data)) {
 				return true;
@@ -87,7 +88,6 @@ class RaDecWriterTest {
 	}
 
 	private boolean vegaFinder(String data) {
-		boolean b = false;
 		for (String line : vegaLines) {
 			if (line.equalsIgnoreCase(data)) {
 				return true;
@@ -99,8 +99,11 @@ class RaDecWriterTest {
 	@DisplayName("Confirm compiled wasp12 & vega radec filenames are correct")
 	@Test
 	void compileFilenames_ConfirmCorrect() {
-		assertEquals("wasp 12.V.radec.txt".toLowerCase(), waspFilename.toLowerCase());
-		assertEquals("vega.B.radec.txt".toLowerCase(), vegaFilename.toLowerCase());
+		Path waspPath = Paths.get(waspFile.toString());
+		Path vegaPath = Paths.get(vegaFile.toString());
+		
+		assertEquals("wasp_12.V.060.radec.txt".toLowerCase(), waspPath.getFileName().toString().toLowerCase());
+		assertEquals("vega.B.050.radec.txt".toLowerCase(), vegaPath.getFileName().toString().toLowerCase());
 	}
 
 	@DisplayName("Read wasp12 radec file confirm selected data & comment lines are correct")

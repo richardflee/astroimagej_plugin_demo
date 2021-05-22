@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import rfl.astroimagej.dev.enums.TextFieldType;
+
 class AstroCoordsTest {
 	
 	public static final double epsilon = 1e-5;
@@ -62,6 +64,31 @@ class AstroCoordsTest {
 	void testDecDms_To_DecDeg_IsCorrect(Double decDeg, String decDms) {
 		assertEquals(decDeg, AstroCoords.decDms_To_decDeg(decDms), epsilon);
 	}
+	
+	@DisplayName("Verify formatting of raHms input")
+	@ParameterizedTest
+	@CsvSource({
+		"01:02:03.45,   1:2:3.454",
+		"01:02:03.46,   1:2:3.455",
+		"01:02:03.45,   1: 2: 3.454"
+	})
+	void testUserFormat_ToSexagemsimal_RaHms_IsCorrect(String formattedRaHms, String input) {
+		assertEquals(formattedRaHms, AstroCoords.sexagesimalFormatter(input, TextFieldType.RA_HMS));
+	}
+	
+	@DisplayName("Verify formatting of decDms input")	
+	@ParameterizedTest
+	@CsvSource({
+		"+01:02:03.45,   +1:2:3.454",
+		"-01:02:03.46,   -1:2:3.455",
+		"+01:02:03.45,   1: 2: 3.454",
+		"-01:02:03.45,   -1: 2: 3.454"
+	})
+	void testUserFormat_ToSexagemsimal_DecDms_IsCorrect(String formattedRaHms, String input) {
+		assertEquals(formattedRaHms, AstroCoords.sexagesimalFormatter(input, TextFieldType.DEC_DMS));
+	}
+	
+	
 
 }
 

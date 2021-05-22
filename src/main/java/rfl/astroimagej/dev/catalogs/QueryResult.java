@@ -1,10 +1,10 @@
-package rfl.astroimagej.dev.queries;
+package rfl.astroimagej.dev.catalogs;
 
 import java.util.ArrayList;
 
 /**
  * Encapsulates the results of a coordinate-based query on the VSP or other database
- * in an list of FieldObjects
+ * in an list of type FieldObject
  */
 import java.util.List;
 

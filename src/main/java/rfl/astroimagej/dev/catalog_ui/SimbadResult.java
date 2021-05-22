@@ -1,7 +1,7 @@
-package rfl.astroimagej.dev.queries;
+package rfl.astroimagej.dev.catalog_ui;
 
 /**
- * Encapsulates the results of a objectId query on the SIMBAD database.
+ * Encapsulates the results of an objectId-based query on the SIMBAD database.
  * <p>
  * Overwrites default wasp 12 data with object data if the objectId is found, 
  * otherwise leaves default data unchanged
@@ -21,8 +21,8 @@ public class SimbadResult {
 	private Double magI = null;
 
 	public SimbadResult(String objectId) {
+		// defaults
 		this.objectId = objectId;
-
 		this.simbadId = "WASP-12";
 		this.simbadRaHr = 6.50911;
 		this.simbadDecDeg = 29.67230;
@@ -32,6 +32,7 @@ public class SimbadResult {
 		magI = null;
 	}
 
+	// readonly
 	public String getObjectId() {
 		return objectId;
 	}

@@ -8,10 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import rfl.astroimagej.dev.enums.CatalogMagType;
-import rfl.astroimagej.dev.queries.CatalogQuery;
-import rfl.astroimagej.dev.queries.FieldObject;
-import rfl.astroimagej.dev.queries.QueryResult;
+import rfl.astroimagej.dev.enums.CatalogType;
 
 class CatalogFactoryTest {
 
@@ -49,14 +46,14 @@ class CatalogFactoryTest {
 	@Test
 	void CatalogFactory_VspVegaQuery_ReturnsVegaResult() throws Exception {
 		// configure factory to run vsp vega query
-		AstroCatalog catalog = CatalogFactory.createCatalog(CatalogMagType.VSP);
+		AstroCatalog catalog = CatalogFactory.createCatalog(CatalogType.VSP);
 		CatalogQuery vegaQuery = new CatalogQuery();
 		vegaQuery.setObjectId("vega");
 		vegaQuery.setRaHr(18.61565);
 		vegaQuery.setDecDeg(38.78369);
 		vegaQuery.setFovAmin(60.0);
 		vegaQuery.setMagLimit(16.0);
-		vegaQuery.setCatalogType(CatalogMagType.VSP);
+		vegaQuery.setCatalogType(CatalogType.VSP);
 		vegaQuery.setMagBand("B");		
 		
 	

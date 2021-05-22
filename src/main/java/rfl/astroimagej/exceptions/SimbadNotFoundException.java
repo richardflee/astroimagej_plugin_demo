@@ -5,7 +5,6 @@ package rfl.astroimagej.exceptions;
  *
  */
 public class SimbadNotFoundException extends Exception {
-
 	private static final long serialVersionUID = 1L;
 
 	public SimbadNotFoundException(String message) {

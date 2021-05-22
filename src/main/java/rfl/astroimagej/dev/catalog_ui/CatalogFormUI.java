@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.event.ItemEvent;
 import java.util.Arrays;
 import java.util.List;
@@ -26,204 +25,207 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import rfl.astroimagej.dev.catalogs.AstroCatalog;
-import rfl.astroimagej.dev.catalogs.CatalogFactory;
-import rfl.astroimagej.dev.catalogs.SimbadCatalog;
-import rfl.astroimagej.dev.enums.CatalogMagType;
-import rfl.astroimagej.dev.fileio.PropertiesReadWriter;
-import rfl.astroimagej.dev.fileio.RaDecWriter;
-import rfl.astroimagej.dev.queries.CatalogQuery;
-import rfl.astroimagej.dev.queries.QueryResult;
-import rfl.astroimagej.dev.queries.SimbadResult;
+import rfl.astroimagej.dev._plugin.Vsp_Demo;
+import rfl.astroimagej.dev.catalogs.CatalogQuery;
+import rfl.astroimagej.dev.enums.CatalogType;
+import rfl.astroimagej.dev.enums.TextFieldType;
+import rfl.astroimagej.dev.fileio.FileWriterListener;
 import rfl.astroimagej.dev.utils.AstroCoords;
 import rfl.astroimagej.exceptions.SimbadNotFoundException;
 
 /**
- * Form for user-specified inputs to download astronomical photometry catalog
- * data
- * 
+ * User input form to specify and run an online photometry database query. Outputs are:
+ * <p> 
+ * AstroimageJ compatible radec file, with filename format [target].[filter].[fov_amin].radec.txt 
+ * </p> 
  * <p>
- * Current implementation is specific to the AAVSO VSP catalog (2021-04-08)
+ * DSS fits file with filename format: [target].[filter].[fov_amin].fits 
+ * </p>
+ * <p>
+ * Implemented for the AAVSO VSP catalog (2021-05)
  * </p>
  */
 public class CatalogFormUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private PropertiesReadWriter propReadWriter;
-	private RaDecWriter raDecWriter;
-	private CatalogFormVerifier inputVerifier;
+	private TextInputVerifier inputVerifier;
 	private List<JTextField> textFields;
 	private SimbadCatalog simbad;
 
-	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception ex) {
-			System.err.println("Failed to initialize Windows Look-Feel");
-		}
+	private FileWriterListener writePropsListener;
+	private FileWriterListener writeRaDecListener;
 
-		EventQueue.invokeLater(() -> {
-			new CatalogFormUI();
-		});
+	private final String TITLE = "Saved current dialog settings to properties file";
+	private final String INVALID_DATA = "At least one field has invalid data entry";
+
+	public static void main(String[] args) {
+		Vsp_Demo.main(null);
 	}
 
 	/**
 	 * Opens form to enter VSP target name and related data. User clicks Download to
 	 * run on-line query.
 	 * 
-	 * @param propReadWriter object methods to load or save text field values to
-	 *                       dspdemo.properties file
-	 * 
+	 * @param propertiesFileQuery property file parameters
 	 */
-	public CatalogFormUI() {
+	public CatalogFormUI(CatalogQuery propertiesFileQuery) {
+
 		// set up form controls
 		// form generated in jformdesigner gui builder (GroupLayout)
 		initComponents();
 
-		// set object names
-		initFieldNames();
+		// identify jtextfield objects and set focus order
+		configureTextFields();
 
-		// compile arraylist JTextFields in circular focus set order
-		JTextField[] arr = { objectIdField, raField, decField, fovField, magLimitField };
-		textFields = Arrays.asList(arr);
-		
 		// setup text field and button action listeners
 		setupActionListeners();
 
-		// instantiate objects .. 
-		
-		// handles read / write properties file data
-		propReadWriter = new PropertiesReadWriter();
-		
-		// radec file writer
-		raDecWriter = new RaDecWriter(); 
-
 		// verifier for user entry in chart_ui text fields
-		inputVerifier = new CatalogFormVerifier();
+		inputVerifier = new TextInputVerifier();
 
-		// lookup on-line catalog for user input objectId
+		// lookup user object_id against Smbad on-line database
 		simbad = new SimbadCatalog();
 
+		// display form with title version number & input query data
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setTitle(String.format("VSP Demo v%s", Vsp_Demo.getVersion()));
+		updateCatalogUi(propertiesFileQuery);
 		setVisible(true);
-		
-		// import vspdemo.properties => initialise form controls
-		importPropertiesData(propReadWriter);
 	}
 
-	/*
-	 * Reads property file and sets data to chart_ui jtextfields & combos
-	 */
-	private void importPropertiesData(PropertiesReadWriter propReadWriter) {
-		// read property file into FormData obj
-		CatalogQuery cq = propReadWriter.readCatalogUiProperties();
-
-		// copy FormData values to JTextFields
-		objectIdField.setText(cq.getObjectId());
-		raField.setText(AstroCoords.raHr_To_raHms(cq.getRaHr()));
-		decField.setText(AstroCoords.decDeg_To_decDms(cq.getDecDeg()));
-
-		fovField.setText(String.format("%.1f", cq.getFovAmin()));
-		magLimitField.setText(String.format("%.1f", cq.getMagLimit()));
-
-		catalogCombo.setSelectedItem(cq.getCatalogType().toString());
-		populateFilterCombo(cq.getCatalogType(), cq.getMagBand());
-	}
-
-	/*
-	 * Save jtextfield data to property file
+	
+	/**
+	 * Configure listener for properties filewriter events 
 	 * 
-	 * @return FormData object with text field values
+	 * @param writePropsListener reference to PropertiesFileWriter instance
 	 */
-	private CatalogQuery writePropertiesData() {
-		CatalogQuery data = new CatalogQuery();
-
-		// copy text field data to FieldData obj
-		data.setCatalogType(CatalogMagType.valueOf(catalogCombo.getSelectedItem().toString()));
-		data.setObjectId(objectIdField.getText());
-		data.setRaHr(AstroCoords.raHms_To_raHr(raField.getText()));
-		data.setDecDeg(AstroCoords.decDms_To_decDeg(decField.getText()));
-		data.setFovAmin(Double.parseDouble(fovField.getText()));
-		data.setMagLimit(Double.parseDouble(magLimitField.getText()));
-		data.setMagBand(filterCombo.getSelectedItem().toString());
-
-		// save text field data to properties file
-		propReadWriter.writeCatalogUiProperties(data);
-		return data;
+	public void setPropsWriterListener(FileWriterListener writePropsListener) {
+		this.writePropsListener = writePropsListener;
 	}
 
+	/**
+	 * Configures listener for radewriter events
+	 * 
+	 *@param writeRaDecListener reference to RaDecFileWriter instance
+	 */
+	public void setRaDecWriterListener(FileWriterListener writeRaDecListener) {
+		this.writeRaDecListener = writeRaDecListener;
+	}
+	
+	/**
+	 * Encapsulates current catalog form inputs in a CatalogQuery object
+	 * 
+	 * @return query encapsulating catalog data fields and combo selections
+	 */
+	public CatalogQuery compileQuery() {
+		CatalogQuery query = new CatalogQuery();
+
+		// text field data
+		query.setObjectId(objectIdField.getText());
+		query.setRaHr(AstroCoords.raHms_To_raHr(raField.getText()));
+		query.setDecDeg(AstroCoords.decDms_To_decDeg(decField.getText()));
+		query.setFovAmin(Double.parseDouble(fovField.getText()));
+		query.setMagLimit(Double.parseDouble(magLimitField.getText()));
+
+		// combo selections
+		query.setCatalogType(CatalogType.valueOf(catalogCombo.getSelectedItem().toString()));
+		query.setMagBand(filterCombo.getSelectedItem().toString());
+		return query;
+	}
+
+	
+	// Copies query data to textfield and combo controls
+	private void updateCatalogUi(CatalogQuery query) {
+		objectIdField.setText(query.getObjectId());
+		raField.setText(AstroCoords.raHr_To_raHms(query.getRaHr()));
+		decField.setText(AstroCoords.decDeg_To_decDms(query.getDecDeg()));
+		fovField.setText(String.format("%.1f", query.getFovAmin()));
+		magLimitField.setText(String.format("%.1f", query.getMagLimit()));
+
+		catalogCombo.setSelectedItem(query.getCatalogType().toString());
+		populateFilterCombo(query.getCatalogType(), query.getMagBand());
+	}
+	
+
 	/*
-	 * Configure download button to run on-line catalog search & setup text field
-	 * input validation
+	 * Configures text field input verifiers and button event listeners
 	 */
 	private void setupActionListeners() {
 		// validation of jtextfield values runs when user presses <Enter>
+		// alphanumeric objectId field
 		objectIdField.addActionListener(e -> verifyTextField(objectIdField));
+
+		// sexagesimal ra & dec fields
 		raField.addActionListener(e -> verifyTextField(raField));
 		decField.addActionListener(e -> verifyTextField(decField));
+
+		// numeric fov & maglimit fields
 		fovField.addActionListener(e -> verifyTextField(fovField));
 		magLimitField.addActionListener(e -> verifyTextField(magLimitField));
 
 		// handles change in selected catalog (VSP, APASS ..)
 		catalogCombo.addItemListener(ie -> selectCatalog(ie));
 
-		// close
+		// SIMBAD button => check if valid simbad object id
+		simbadButton.addActionListener(e -> runSimbadQuery());
+
+		// Catalog button => query selected catalog (VSP, APASS..)
+		catalogButton.addActionListener(e -> saveRaDecFile());
+
+		// Save button => save properties file + inform user
+		saveButton.addActionListener(e -> savePropertiesFile());
+
+		// close => lose unsaved changes
 		cancelButton.addActionListener(e -> System.exit(0));
-
-		// user selects SIMBAD => check if valid simbad object id
-		// write current form data to properties file
-		// return catalog query object & run query
-		simbadButton.addActionListener(e -> {
-			CatalogQuery query = writePropertiesData();
-			runSimbadQuery(query);
-		});
-		
-		// user selects radec => query selected catalog (VSP, APASS..)
-		// If at least one ref star record then write radec
-		radecButton.addActionListener(e -> {
-			if (verifyAllInputs()) {
-				CatalogQuery query = writePropertiesData();
-				runCatalogQuery(query);
-			} else {
-				String msg = "One or more data entries are not valid";
-				JOptionPane.showMessageDialog(null, msg, "Query Error",
-						JOptionPane.INFORMATION_MESSAGE);
-			}
-		});
 	}
 
-	// run VSP catlog query centred at ra / dec coordinates over fovAmin
-	private void runCatalogQuery(CatalogQuery query) {
-		QueryResult result = null;
-		AstroCatalog catalog = CatalogFactory.createCatalog(query.getCatalogType());
-		if (catalog != null) {
-			result = catalog.runQuery(query);			
-			String message = raDecWriter.writeRaDecFile(query, result);
-			JOptionPane.showMessageDialog(null, message, 
-					"RaDec Writer", JOptionPane.INFORMATION_MESSAGE);
-		}
-		
-	}
-
-	// if valid SimbadId then update info labels & object ra & dec fields
-	// otherwise ra/dec unchanged & '.' => no label data
-	private void runSimbadQuery(CatalogQuery query) {
-		// SimbadCatalog simbad = new SimbadCatalog();
+	/**
+	 * Handles Simbad query request, if objectid found then update ra and dec values,
+	 * otherwise handle SimbadNotFound exception
+	 */
+	private void runSimbadQuery() {
+		CatalogQuery query = compileQuery();
 		try {
-			SimbadResult simbadResult = simbad.runQuery(query);
-			updateCatalogUi(simbadResult);
+			updateCatalogUi(simbad.runQuery(query));
 		} catch (SimbadNotFoundException se) {
-			JOptionPane.showMessageDialog(null, se.getMessage(), "SIMBAD Query Error", JOptionPane.INFORMATION_MESSAGE);
-			updateCatalogUi(null);
+			updateCatalogUi(query);
+			JOptionPane.showMessageDialog(null, se.getMessage(), TITLE, JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
-	// update ra, dec and label fields if valid simbad objectid query
-	// invalid simbad id then inform user & set labels = "." (no data)
+	// handles (vsp) catalog query request, if good then write radec and image fits files
+	private void saveRaDecFile() {
+		String message = INVALID_DATA;
+		// check all text field values are valid
+		if (verifyAllInputs()) {
+			CatalogQuery query = compileQuery();
+			message = writeRaDecListener.writeFile(query);
+			JOptionPane.showMessageDialog(null, message, TITLE, JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(null, message, TITLE, JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	// handles properties file request
+	private void savePropertiesFile() {
+		String message = INVALID_DATA;
+		if (verifyAllInputs()) {
+			message = writePropsListener.writeFile(compileQuery());
+			JOptionPane.showMessageDialog(null, message, TITLE, JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(null, message, TITLE, JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	/**
+	 * Update ra, dec and label fields if valid simbad objectid query
+	 * invalid simbad id then inform user & set labels = "." (no data)
+	 * 
+	 * @param result if query is good, then Simbad ra and dec values, otherwise null
+	 */
 	private void updateCatalogUi(SimbadResult result) {
 		if (result == null) {
 			simbadIdLabel.setText(".");
@@ -238,9 +240,11 @@ public class CatalogFormUI extends JFrame {
 			String raHms = AstroCoords.raHr_To_raHms(result.getSimbadRaHr());
 			String decDms = AstroCoords.decDeg_To_decDms(result.getSimbadDecDeg());
 
-			// update catalog ra, dec
+			// update catalog ra, dec values in black
 			raField.setText(raHms);
 			decField.setText(decDms);
+			raField.setForeground(Color.black);
+			decField.setForeground(Color.black);
 
 			// update info labels
 			simbadIdLabel.setText(result.getSimbadId());
@@ -262,74 +266,74 @@ public class CatalogFormUI extends JFrame {
 		}
 	}
 
+		
 	/*
-	 * Handles change in catalogCombo selection. Clears existing filterCombo list
-	 * and loads new list. Default selection = item 0
+	 * Handles change in catalogCombo selection. 
+	 * Clears existing filterCombo list and loads a new list based on CatalogType enum
+	 * 
+	 * @param ie event indicates an item was selected in the catalogCombo control 
 	 */
 	private void selectCatalog(ItemEvent ie) {
 		if (ie.getStateChange() == ItemEvent.SELECTED) {
-			// get current catalogCombo selection & associated AstroCatalog enum
-			// populate filterCombo and select first item (index = 0)
+			// get current catalogCombo selection & catalog type
 			String selectedCatalog = catalogCombo.getSelectedItem().toString().toUpperCase();
-			CatalogMagType catalog = CatalogMagType.valueOf(selectedCatalog);
+			CatalogType catalog = CatalogType.valueOf(selectedCatalog);
 
-			// select the first listed filter
-			String selectFirst = catalog.getMagBand().substring(0, 1);
-			populateFilterCombo(catalog, selectFirst);
+			// populate filterCombo and select first item 
+			populateFilterCombo(catalog, catalog.getMagBands().get(0));
 		}
 	}
 
+	
 	/*
-	 * clear filterCombo, load list of filters in form <F1.F2.F3 ..> split filter
-	 * list string on '.' and add to filterCombo items list selected item index
-	 * number
+	 * Clears current and imports new filter list in the filter selection combo
+	 * 
+	 * @param catalog catalog type selected in catalogCombo
+	 * @param selectedFilter selected catalog filter
 	 */
-	private void populateFilterCombo(CatalogMagType catalog, String selectedFilter) {
+	private void populateFilterCombo(CatalogType catalog, String selectedFilter) {
+		// clear filters list
 		filterCombo.removeAllItems();
-		List<String> items = Arrays.asList(catalog.getMagBand().split("\\."));
-		for (String item : items) {
-			filterCombo.addItem(item);
-		}
+		
+		// import filter list for selected catalog & select specified filter
+		catalog.getMagBands().forEach(item -> filterCombo.addItem(item));
 		filterCombo.setSelectedItem(selectedFilter);
 	}
 
-	/*
-	 * Validates user input for active text field
-	 */
+	 // Validates user input for active text field
 	private boolean verifyTextField(JTextField textField) {
-		// initialise text to red => indicates invalid data unless data is valid
+		// defaults to invalid
 		textField.setForeground(Color.red);
 
-		// verify input for current jtextfield, identified by object name
+		// Get input and active text field, identified by value of TextFieldType enum
 		String input = textField.getText().trim();
-		boolean isValid = inputVerifier.verifyInput(input, textField.getName().toLowerCase());
+		TextFieldType formField = TextFieldType.valueOfFieldName(textField.getName());
+		
+		// verify input for current text field
+		boolean isValid = inputVerifier.verifyInput(input, formField);
 
-		// valid input => write data, minus any leading / trailing white space
-		// & reset text colour to 'standard' black
+		// valid input => update text and set focus to the next text field
 		if (isValid) {
-			textField.setText(input);
+			textField.setText(AstroCoords.sexagesimalFormatter(input, formField));
 			textField.setForeground(Color.black);
 			setFocus(textField);
 		}
 		return isValid;
 	}
 
-	/*
-	 * confirm all text fields are valid before submitting on-line search
-	 */
+	// Confirms that all text fields are valid before submitting on-line search
 	private boolean verifyAllInputs() {
 		boolean isValid = true;
 
 		for (JTextField textField : textFields) {
 			String input = textField.getText().trim();
-			isValid = isValid && inputVerifier.verifyInput(input, textField.getName().toLowerCase());
+			TextFieldType dataType = TextFieldType.valueOfFieldName(textField.getName());
+			isValid = isValid && inputVerifier.verifyInput(input, dataType);
 		}
 		return isValid;
 	}
 
-	/*
-	 * move focus to next text field in sequence
-	 */
+	// Moves focus to next text field in sequence
 	private void setFocus(JTextField textField) {
 		for (JTextField field : textFields) {
 			if (field.equals(textField)) {
@@ -341,16 +345,18 @@ public class CatalogFormUI extends JFrame {
 		}
 	}
 
-	/*
-	 * Set names for jtextfield objects to identify active field in verify methods
-	 */
-	private void initFieldNames() {
-		objectIdField.setName("targetField");
-		raField.setName("raField");
-		decField.setName("decField");
-		fovField.setName("fovField");
-		magLimitField.setName("magLimitField");
-		filterCombo.setName("filterCombo");
+	// Sets up form text fields for data validation and focus order
+	private void configureTextFields() {		
+		// Maps TextFieldType enum to text field to identify active field
+		objectIdField.setName(TextFieldType.OBJECT_ID.getFieldName());
+		raField.setName(TextFieldType.RA_HMS.getFieldName());
+		decField.setName(TextFieldType.DEC_DMS.getFieldName());
+		fovField.setName(TextFieldType.FOV_AMIN.getFieldName());
+		magLimitField.setName(TextFieldType.MAG_LIMIT.getFieldName());
+
+		// compile arraylist JTextFields in circular focus set order
+		JTextField[] arr = { objectIdField, raField, decField, fovField, magLimitField };
+		textFields = Arrays.asList(arr);
 	}
 
 	private void initComponents() {
@@ -382,7 +388,8 @@ public class CatalogFormUI extends JFrame {
 		panel2 = new JPanel();
 		simbadButton = new JButton();
 		cancelButton = new JButton();
-		radecButton = new JButton();
+		catalogButton = new JButton();
+		saveButton = new JButton();
 		panel3 = new JPanel();
 		idLabel = new JLabel();
 		raLabel = new JLabel();
@@ -424,30 +431,35 @@ public class CatalogFormUI extends JFrame {
 					objectIdField.setText(bundle.getString("VspDataUI.objectIdField.text"));
 					objectIdField.setFocusCycleRoot(true);
 					objectIdField.setBackground(Color.white);
+					objectIdField.setToolTipText(bundle.getString("VspDataUI.objectIdField.toolTipText"));
 
 					// ---- label2 ----
 					label2.setText(bundle.getString("VspDataUI.label2.text_3"));
 
 					// ---- raField ----
 					raField.setText("06:30:32.80");
+					raField.setToolTipText(bundle.getString("VspDataUI.raField.toolTipText"));
 
 					// ---- label3 ----
 					label3.setText(bundle.getString("VspDataUI.label3.text_3"));
 
 					// ---- decField ----
 					decField.setText("+20:40:20.27");
+					decField.setToolTipText(bundle.getString("VspDataUI.decField.toolTipText"));
 
 					// ---- label4 ----
 					label4.setText(bundle.getString("VspDataUI.label4.text_3"));
 
 					// ---- fovField ----
 					fovField.setText("60.0");
+					fovField.setToolTipText(bundle.getString("VspDataUI.fovField.toolTipText"));
 
 					// ---- label5 ----
 					label5.setText(bundle.getString("VspDataUI.label5.text_3"));
 
 					// ---- magLimitField ----
 					magLimitField.setText(bundle.getString("VspDataUI.magLimitField.text"));
+					magLimitField.setToolTipText(bundle.getString("VspDataUI.magLimitField.toolTipText"));
 
 					// ---- label7 ----
 					label7.setText(bundle.getString("VspDataUI.label7.text_2"));
@@ -562,33 +574,37 @@ public class CatalogFormUI extends JFrame {
 
 					// ---- simbadButton ----
 					simbadButton.setText(bundle.getString("VspDataUI.simbadButton.text"));
+					simbadButton.setToolTipText(bundle.getString("VspDataUI.simbadButton.toolTipText"));
 
 					// ---- cancelButton ----
 					cancelButton.setText(bundle.getString("VspDataUI.cancelButton.text"));
 
-					// ---- radecButton ----
-					radecButton.setText("Save radec");
+					// ---- catalogButton ----
+					catalogButton.setText("Catalog");
+					catalogButton.setToolTipText(bundle.getString("VspDataUI.catalogButton.toolTipText"));
+
+					// ---- saveButton ----
+					saveButton.setText("Save");
+					saveButton.setToolTipText(bundle.getString("VspDataUI.saveButton.toolTipText"));
 
 					GroupLayout panel2Layout = new GroupLayout(panel2);
 					panel2.setLayout(panel2Layout);
-					panel2Layout.setHorizontalGroup(panel2Layout.createParallelGroup().addGroup(panel2Layout
-							.createSequentialGroup().addContainerGap()
-							.addGroup(panel2Layout.createParallelGroup()
-									.addGroup(panel2Layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE)
-											.addComponent(simbadButton))
-									.addGroup(panel2Layout.createSequentialGroup()
-											.addGroup(panel2Layout.createParallelGroup().addComponent(radecButton)
-													.addComponent(cancelButton))
-											.addGap(0, 0, Short.MAX_VALUE)))
-							.addContainerGap()));
-					panel2Layout.linkSize(SwingConstants.HORIZONTAL,
-							new Component[] { cancelButton, radecButton, simbadButton });
+					panel2Layout.setHorizontalGroup(panel2Layout.createParallelGroup()
+							.addGroup(panel2Layout.createSequentialGroup().addContainerGap()
+									.addGroup(panel2Layout.createParallelGroup()
+											.addComponent(saveButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+											.addComponent(catalogButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+											.addComponent(simbadButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+											.addComponent(cancelButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
+									.addContainerGap()));
 					panel2Layout
 							.setVerticalGroup(panel2Layout.createParallelGroup()
 									.addGroup(panel2Layout.createSequentialGroup().addContainerGap()
 											.addComponent(simbadButton)
 											.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-											.addComponent(radecButton)
+											.addComponent(catalogButton)
+											.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+											.addComponent(saveButton)
 											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
 													GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 											.addComponent(cancelButton).addContainerGap()));
@@ -598,6 +614,7 @@ public class CatalogFormUI extends JFrame {
 				{
 					panel3.setBorder(new TitledBorder(bundle.getString("VspDataUI.panel3.border")));
 					panel3.setPreferredSize(new Dimension(190, 164));
+					panel3.setToolTipText(bundle.getString("VspDataUI.panel3.toolTipText"));
 
 					// ---- idLabel ----
 					idLabel.setText(bundle.getString("VspDataUI.idLabel.text_2"));
@@ -615,7 +632,7 @@ public class CatalogFormUI extends JFrame {
 					simbadRaLabel.setText("HH:MM:SS.SS");
 
 					// ---- simbadDecLabel ----
-					simbadDecLabel.setText(".");
+					simbadDecLabel.setText("DD:MM:SS.SS");
 
 					GroupLayout panel3Layout = new GroupLayout(panel3);
 					panel3.setLayout(panel3Layout);
@@ -631,7 +648,7 @@ public class CatalogFormUI extends JFrame {
 									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 									.addGroup(panel3Layout.createParallelGroup().addComponent(simbadIdLabel)
 											.addComponent(simbadRaLabel).addComponent(simbadDecLabel))
-									.addGap(0, 24, Short.MAX_VALUE)));
+									.addGap(0, 106, Short.MAX_VALUE)));
 					panel3Layout.setVerticalGroup(panel3Layout.createParallelGroup()
 							.addGroup(panel3Layout.createSequentialGroup().addContainerGap()
 									.addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -642,13 +659,14 @@ public class CatalogFormUI extends JFrame {
 									.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 									.addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 											.addComponent(decLabel).addComponent(simbadDecLabel))
-									.addContainerGap(52, Short.MAX_VALUE)));
+									.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 				}
 
 				// ======== panel4 ========
 				{
 					panel4.setBorder(new TitledBorder(bundle.getString("VspDataUI.panel4.border")));
 					panel4.setPreferredSize(new Dimension(190, 164));
+					panel4.setToolTipText(bundle.getString("VspDataUI.panel4.toolTipText"));
 
 					// ---- idLabel2 ----
 					idLabel2.setText(bundle.getString("VspDataUI.idLabel2.text"));
@@ -687,7 +705,7 @@ public class CatalogFormUI extends JFrame {
 									.addGroup(panel4Layout.createParallelGroup().addComponent(simbadMagBLabel)
 											.addComponent(simbadMagVLabel).addComponent(simbadMagRLabel)
 											.addComponent(simbadMagILabel))
-									.addContainerGap(118, Short.MAX_VALUE)));
+									.addContainerGap(44, Short.MAX_VALUE)));
 					panel4Layout.setVerticalGroup(panel4Layout.createParallelGroup()
 							.addGroup(panel4Layout.createSequentialGroup().addContainerGap()
 									.addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -701,40 +719,38 @@ public class CatalogFormUI extends JFrame {
 									.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 									.addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 											.addComponent(idLabel5).addComponent(simbadMagILabel))
-									.addContainerGap(23, Short.MAX_VALUE)));
+									.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 				}
 
 				GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
 				contentPanel.setLayout(contentPanelLayout);
 				contentPanelLayout.setHorizontalGroup(contentPanelLayout.createParallelGroup()
-						.addGroup(contentPanelLayout.createSequentialGroup()
-								.addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addGroup(contentPanelLayout.createSequentialGroup()
-								.addComponent(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(panel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)));
-				contentPanelLayout.setVerticalGroup(contentPanelLayout.createParallelGroup()
-						.addGroup(contentPanelLayout.createSequentialGroup()
+						.addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
 								.addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
 										.addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
 												Short.MAX_VALUE)
-										.addComponent(panel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE))
-								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(panel3, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
+								.addGap(18, 18, 18)
 								.addGroup(contentPanelLayout.createParallelGroup()
-										.addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(panel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE))
-								.addGap(0, 0, 0)));
+										.addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
+										.addGroup(
+												contentPanelLayout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE)
+														.addComponent(panel4, GroupLayout.PREFERRED_SIZE, 116,
+																GroupLayout.PREFERRED_SIZE)))));
+				contentPanelLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] { panel2, panel4 });
+				contentPanelLayout.setVerticalGroup(contentPanelLayout.createParallelGroup().addGroup(contentPanelLayout
+						.createSequentialGroup()
+						.addGroup(contentPanelLayout.createParallelGroup()
+								.addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(panel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE))
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(contentPanelLayout.createParallelGroup()
+								.addComponent(panel4, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
+								.addComponent(panel3, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 			}
 			dialogPane.add(contentPanel, BorderLayout.CENTER);
 		}
@@ -770,7 +786,8 @@ public class CatalogFormUI extends JFrame {
 	private JPanel panel2;
 	private JButton simbadButton;
 	private JButton cancelButton;
-	private JButton radecButton;
+	private JButton catalogButton;
+	private JButton saveButton;
 	private JPanel panel3;
 	private JLabel idLabel;
 	private JLabel raLabel;

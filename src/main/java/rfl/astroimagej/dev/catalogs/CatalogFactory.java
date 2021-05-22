@@ -2,22 +2,29 @@ package rfl.astroimagej.dev.catalogs;
 
 import javax.swing.JOptionPane;
 
-import rfl.astroimagej.dev.enums.CatalogMagType;
+import rfl.astroimagej.dev.enums.CatalogType;
 
+/**
+ * Creates an instance of catalog type selected in the catalog ui dialog.
+ * <p>
+ * currently only VSP catalog is the only implementation
+ * <p/> 
+ */
 public class CatalogFactory {
 
-	public static AstroCatalog createCatalog(CatalogMagType catalogType) {
+	/**
+	 * Manages selection of on-line astronomical database
+	 * 
+	 * @param catalogType type of on-line database to create
+	 * @return catalog object of selected database type
+	 */
+	public static AstroCatalog createCatalog(CatalogType catalogType) {
 		AstroCatalog catalog = null;
-		switch (catalogType) {
-		case SIMBAD:
-			break;
-		case VSP:
+		if (catalogType == CatalogType.VSP) {
 			catalog = new VspCatalog();
-			break;
-		case APASS:
-			String msg = "APASS not implemented";
-			JOptionPane.showMessageDialog(null, msg, "SIMBAD Query Error", JOptionPane.INFORMATION_MESSAGE);
-			break;
+		} else {
+			String message = String.format("Program error %s catalog", catalogType.toString());
+			JOptionPane.showMessageDialog(null, message, "Catalog Query Error", JOptionPane.INFORMATION_MESSAGE);
 		}
 		return catalog;
 	}

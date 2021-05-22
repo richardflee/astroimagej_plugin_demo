@@ -6,28 +6,26 @@ import java.net.URL;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import rfl.astroimagej.dev.queries.CatalogQuery;
-import rfl.astroimagej.dev.queries.FieldObject;
-import rfl.astroimagej.dev.queries.QueryResult;
+import rfl.astroimagej.dev.enums.CatalogType;
 import rfl.astroimagej.dev.utils.AstroCoords;
+import rfl.astroimagej.dev.utils.CatalogUrls;
 
 /**
- * Queries the AAVSO Variable Star Plotter (VSP) database for field star photometry data user-specified parmeters.
- * The search region is centred on  RA and DEC coordinates and covers a square fov. The query response returns 
- * field star records with photometry data for the specified magnitude band (B, V, Rc or Ic).
+ * Queries the AAVSO Variable Star Plotter (VSP) database for field star based on photometry data user-specified parameters.
+ * <p> The search region is centred on  RA and DEC coordinates and covers a square fov. </p>
+ * <p> The query response returns field star records with photometry data for the specified magnitude band (B, V, Rc or Ic).</p>
  * <p>
- * Example vsp RESTful url: https://app.aavso.org/vsp/api/chart/?format=json&fov=30.0&maglimit=14.5&ra=97.63665&dec=29.67230;
+ * Example url: https://app.aavso.org/vsp/api/chart/?format=json&fov=30.0&maglimit=14.5&ra=97.63665&dec=29.67230;
  * Refer getUrl() method for details
  * </p>
- * <p> Note that currently VSP API is not documented on-line (May 2021) </p> 
+ * <p> Note that currently VSP API is not documented on-line (2021-05)</p> 
  * 
  * <p>
- * Json format response, format [root]/[photometry]/[fieldstar[1] ...fieldstar[n]
+ * Json format response, [root]/[photometry]/[fieldstar[1] ...fieldstar[n]
  * where each field star comprises coordinate data and an array of wave-band magnitude data. 
  * </p>
  */
 public class VspCatalog implements AstroCatalog {
-	private CatalogQuery query = null;
 	private ObjectMapper objectMapper = null;
 
 	// create Jackson object mapper to decode json response to vsp query
@@ -35,7 +33,6 @@ public class VspCatalog implements AstroCatalog {
 		objectMapper = new ObjectMapper();
 	}
 
-	
 	/**
 	 *  Runs the VSP database query with url compiled from user-input parameters and decodes
 	 *  json response to extract photometry data.
@@ -52,7 +49,7 @@ public class VspCatalog implements AstroCatalog {
 	public QueryResult runQuery(CatalogQuery query) {		
 		// vsp database query object, configured from user inputs to Catalog dialog
 		// filter json response for selected magband / photometry filter type
-		this.query = query;	
+		// this.query = query;	
 		String magBand = query.getMagBand();
 		
 		// vsp query response, index to object id
@@ -61,7 +58,7 @@ public class VspCatalog implements AstroCatalog {
 		// reference to json root node
 		JsonNode root = null;
 		try {
-			root = objectMapper.readTree(new URL(getUrl()));
+			root = objectMapper.readTree(new URL(CatalogUrls.getUrl(query, CatalogType.VSP)));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -77,7 +74,7 @@ public class VspCatalog implements AstroCatalog {
 			fo.setDecDeg(AstroCoords.decDms_To_decDeg(foNode.path("dec").asText()));
 			
 			// if node matching magBand is found then add mag & magErr
-			// to fo object and append to result list
+			// to fieldObject (fo) and append to result list
 			JsonNode bNode = importMagData(foNode, magBand);
 			if (bNode != null) {
 				fo.setMag(bNode.path("mag").asDouble());
@@ -107,26 +104,6 @@ public class VspCatalog implements AstroCatalog {
 			}
 		}
 		return node;
-	}
-
-	// compile VSP API url
-	private String getUrl() {
-		String url = "https://app.aavso.org/vsp/api/chart/?format=json"; // VSP header
-		url +=  String.format("&fov=%.1f", query.getFovAmin()); // fov nn.n (arcmin)
-		url += String.format("&maglimit=%.1f", query.getMagLimit()); // magLimit nn.n (mag)
-		url += String.format("&ra=%.5f", query.getRaHr() * 15.0); // ra nnn.nnnnn (0 to 360 deg)
-		url += String.format("&dec=%.5f", query.getDecDeg()); // dec nn.nnnnn (0 to ± 90 deg)
-		return url;
-	}
-
-	public static void main(String[] args) {
-
-		CatalogQuery query = new CatalogQuery();
-		VspCatalog catalog = new VspCatalog();
-		QueryResult result = catalog.runQuery(query);
-		
-		System.out.println("here i am");
-		System.out.println(result.toString());
 	}
 }
 
