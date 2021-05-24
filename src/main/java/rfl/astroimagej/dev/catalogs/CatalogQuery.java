@@ -25,7 +25,7 @@ public class CatalogQuery {
 		this.decDeg = 29.67230;
 		this.fovAmin = 60.0;
 		this.magLimit = 15.0;
-		this.catalogType = CatalogType.SIMBAD;
+		this.catalogType = CatalogType.VSP;
 		this.magBand = "V";
 	}
 	

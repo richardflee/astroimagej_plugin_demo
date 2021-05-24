@@ -144,9 +144,11 @@ public class CatalogFormUI extends JFrame {
 		decField.setText(AstroCoords.decDeg_To_decDms(query.getDecDeg()));
 		fovField.setText(String.format("%.1f", query.getFovAmin()));
 		magLimitField.setText(String.format("%.1f", query.getMagLimit()));
-
-		catalogCombo.setSelectedItem(query.getCatalogType().toString());
-		populateFilterCombo(query.getCatalogType(), query.getMagBand());
+		
+		// populate filter combo with catalog set & select current filter
+		String selectedCatalog = query.getCatalogType().toString().toUpperCase();
+		catalogCombo.setSelectedItem(selectedCatalog);
+		populateFilterCombo(selectedCatalog, query.getMagBand());
 	}
 	
 
@@ -203,8 +205,12 @@ public class CatalogFormUI extends JFrame {
 		if (verifyAllInputs()) {
 			CatalogQuery query = compileQuery();
 			message = writeRaDecListener.writeFile(query);
-			JOptionPane.showMessageDialog(null, message, TITLE, JOptionPane.INFORMATION_MESSAGE);
+			// if message is not empty then show in message dialog
+			if (message.length() > 0) {
+				JOptionPane.showMessageDialog(null, message, TITLE, JOptionPane.INFORMATION_MESSAGE);
+			}
 		} else {
+			// at least one invalid data entry
 			JOptionPane.showMessageDialog(null, message, TITLE, JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
@@ -280,20 +286,24 @@ public class CatalogFormUI extends JFrame {
 			CatalogType catalog = CatalogType.valueOf(selectedCatalog);
 
 			// populate filterCombo and select first item 
-			populateFilterCombo(catalog, catalog.getMagBands().get(0));
+			populateFilterCombo(selectedCatalog, catalog.getMagBands().get(0));
 		}
 	}
 
 	
 	/*
 	 * Clears current and imports new filter list in the filter selection combo
+	 *  
+	 * @param selectedCatalog uppercase name of current catalog selected in catalog combo
 	 * 
-	 * @param catalog catalog type selected in catalogCombo
-	 * @param selectedFilter selected catalog filter
+	 * @param selectedFilter filter name of current filter selection in filter combo
 	 */
-	private void populateFilterCombo(CatalogType catalog, String selectedFilter) {
+	private void populateFilterCombo(String selectedCatalog, String selectedFilter) {
 		// clear filters list
 		filterCombo.removeAllItems();
+		
+		// retrieve catalog from enum
+		CatalogType catalog = CatalogType.valueOf(selectedCatalog);
 		
 		// import filter list for selected catalog & select specified filter
 		catalog.getMagBands().forEach(item -> filterCombo.addItem(item));
