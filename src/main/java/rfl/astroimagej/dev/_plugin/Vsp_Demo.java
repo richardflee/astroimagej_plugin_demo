@@ -25,7 +25,7 @@ import rfl.astroimagej.dev.fileio.RaDecFileWriter;
  */
 public class Vsp_Demo implements PlugIn  {
 	
-	private final static String VERSION_NUMBER = "1.00a";
+	private final static String VERSION_NUMBER = "WIN10-1.00b-SNAPSHOT";
 	
 	/**
 	 * ImageJ calls the run method when user selects AstroImageJ/Plugin/Vsp_Demo menu option
@@ -66,16 +66,21 @@ public class Vsp_Demo implements PlugIn  {
 		// First run loads default WASP-12 data set
 		CatalogQuery query = PropertiesFileReader.readPropertiesFile();
 		
-		// Opens catalog user interface with properties or default data  
-		CatalogFormUI catalogUi = new CatalogFormUI(query);
-		
 		// Instantiates file writer objects
 		PropertiesFileWriter pfw = new PropertiesFileWriter();
 		RaDecFileWriter rdw = new RaDecFileWriter();
 		
+		// Opens catalog user interface with properties or default data  
+		CatalogFormUI catalogUi = new CatalogFormUI(query);
+		
 		// sets up file writer as listeners to catalog query & save property file events
 		catalogUi.setPropsWriterListener(pfw);
 		catalogUi.setRaDecWriterListener(rdw);
+		
+		// finally set JDialog modal and visible after objects and form complete initialisation
+		// Set dialog modal to lock-out AIJ toolbar while vsp_demo open, otherwise bad things can happen ..
+		catalogUi.setModal(true);
+		catalogUi.setVisible(true);
 	}
 	
 	/**

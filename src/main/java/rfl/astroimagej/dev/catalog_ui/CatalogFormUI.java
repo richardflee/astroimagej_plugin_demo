@@ -18,7 +18,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -37,18 +37,18 @@ import rfl.astroimagej.dev.utils.AstroCoords;
 import rfl.astroimagej.exceptions.SimbadNotFoundException;
 
 /**
- * User input form to specify and run an online photometry database query. Outputs are:
- * <p> 
- * AstroimageJ compatible radec file, with filename format [target].[filter].[fov_amin].radec.txt 
- * </p> 
- * <p>
- * DSS fits file with filename format: [target].[filter].[fov_amin].fits 
- * </p>
- * <p>
- * Implemented for the AAVSO VSP catalog (2021-05)
- * </p>
+ * User input form to specify and run an online photometry database query. Modal JDialog
+ * to lock-out AstroImageJ toolbar while plugin is open to prevent software freeze.. 
+ * 
+ * <p>Outputs are:</p>
+ * <p>  AstroImageJ compatible radec file, with filename format 
+ *      [target].[filter].[fov_amin].radec.txt </p> 
+ *      
+ * <p>  DSS fits file with filename format: [target].[filter].[fov_amin].fits </p>
+ * 
+ * <p> Implemented for the AAVSO VSP catalog (2021-05)</p>
  */
-public class CatalogFormUI extends JFrame {
+public class CatalogFormUI extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private TextInputVerifier inputVerifier;
@@ -91,9 +91,8 @@ public class CatalogFormUI extends JFrame {
 
 		// display form with title version number & input query data
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setTitle(String.format("VSP Demo v%s", Vsp_Demo.getVersion()));
+		setTitle(String.format("VSP Demo %s", Vsp_Demo.getVersion()));
 		updateCatalogUi(propertiesFileQuery);
-		setVisible(true);
 	}
 
 	
@@ -417,350 +416,383 @@ public class CatalogFormUI extends JFrame {
 		simbadMagRLabel = new JLabel();
 		simbadMagILabel = new JLabel();
 
-		// ======== this ========
+		//======== this ========
 		setTitle("VSP Demo v0.1");
 		setResizable(false);
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
-		// ======== dialogPane ========
+		//======== dialogPane ========
 		{
 			dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
 			dialogPane.setLayout(new BorderLayout());
 
-			// ======== contentPanel ========
+			//======== contentPanel ========
 			{
 
-				// ======== panel1 ========
+				//======== panel1 ========
 				{
 
-					// ---- label1 ----
+					//---- label1 ----
 					label1.setText(bundle.getString("VspDataUI.label1.text_3"));
 
-					// ---- objectIdField ----
+					//---- objectIdField ----
 					objectIdField.setText(bundle.getString("VspDataUI.objectIdField.text"));
 					objectIdField.setFocusCycleRoot(true);
 					objectIdField.setBackground(Color.white);
 					objectIdField.setToolTipText(bundle.getString("VspDataUI.objectIdField.toolTipText"));
 
-					// ---- label2 ----
+					//---- label2 ----
 					label2.setText(bundle.getString("VspDataUI.label2.text_3"));
 
-					// ---- raField ----
+					//---- raField ----
 					raField.setText("06:30:32.80");
 					raField.setToolTipText(bundle.getString("VspDataUI.raField.toolTipText"));
 
-					// ---- label3 ----
+					//---- label3 ----
 					label3.setText(bundle.getString("VspDataUI.label3.text_3"));
 
-					// ---- decField ----
+					//---- decField ----
 					decField.setText("+20:40:20.27");
 					decField.setToolTipText(bundle.getString("VspDataUI.decField.toolTipText"));
 
-					// ---- label4 ----
+					//---- label4 ----
 					label4.setText(bundle.getString("VspDataUI.label4.text_3"));
 
-					// ---- fovField ----
+					//---- fovField ----
 					fovField.setText("60.0");
 					fovField.setToolTipText(bundle.getString("VspDataUI.fovField.toolTipText"));
 
-					// ---- label5 ----
+					//---- label5 ----
 					label5.setText(bundle.getString("VspDataUI.label5.text_3"));
 
-					// ---- magLimitField ----
+					//---- magLimitField ----
 					magLimitField.setText(bundle.getString("VspDataUI.magLimitField.text"));
 					magLimitField.setToolTipText(bundle.getString("VspDataUI.magLimitField.toolTipText"));
 
-					// ---- label7 ----
+					//---- label7 ----
 					label7.setText(bundle.getString("VspDataUI.label7.text_2"));
 
-					// ---- label8 ----
+					//---- label8 ----
 					label8.setText(bundle.getString("VspDataUI.label8.text_2"));
 
-					// ---- label9 ----
+					//---- label9 ----
 					label9.setText(bundle.getString("VspDataUI.label9.text_2"));
 
-					// ---- label10 ----
+					//---- label10 ----
 					label10.setText(bundle.getString("VspDataUI.label10.text_2"));
 
-					// ---- catalogCombo ----
-					catalogCombo.setModel(new DefaultComboBoxModel<>(new String[] { "VSP", "APASS" }));
+					//---- catalogCombo ----
+					catalogCombo.setModel(new DefaultComboBoxModel<>(new String[] {
+						"VSP",
+						"APASS"
+					}));
 
-					// ---- label11 ----
+					//---- label11 ----
 					label11.setText(bundle.getString("VspDataUI.label11.text"));
 
-					// ---- label12 ----
+					//---- label12 ----
 					label12.setText(bundle.getString("VspDataUI.label12.text"));
 
 					GroupLayout panel1Layout = new GroupLayout(panel1);
 					panel1.setLayout(panel1Layout);
-					panel1Layout.setHorizontalGroup(panel1Layout.createParallelGroup()
-							.addGroup(panel1Layout.createSequentialGroup().addGap(15, 15, 15)
-									.addGroup(panel1Layout.createParallelGroup()
-											.addComponent(label1, GroupLayout.Alignment.TRAILING)
-											.addComponent(label2, GroupLayout.Alignment.TRAILING)
-											.addComponent(label3, GroupLayout.Alignment.TRAILING)
-											.addComponent(label4, GroupLayout.Alignment.TRAILING)
-											.addComponent(label5, GroupLayout.Alignment.TRAILING)
-											.addComponent(label11, GroupLayout.Alignment.TRAILING)
-											.addComponent(label12, GroupLayout.Alignment.TRAILING))
-									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-									.addGroup(panel1Layout.createParallelGroup()
-											.addComponent(filterCombo, GroupLayout.PREFERRED_SIZE,
-													GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-											.addGroup(panel1Layout
-													.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-													.addGroup(panel1Layout.createSequentialGroup().addGroup(panel1Layout
-															.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-															.addComponent(fovField, GroupLayout.Alignment.LEADING)
-															.addComponent(decField, GroupLayout.Alignment.LEADING,
-																	GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-															.addComponent(raField, GroupLayout.Alignment.LEADING)
-															.addComponent(magLimitField))
-															.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-															.addGroup(panel1Layout.createParallelGroup()
-																	.addComponent(label7).addComponent(label8)
-																	.addComponent(label9).addComponent(label10)))
-													.addComponent(objectIdField).addComponent(catalogCombo,
-															GroupLayout.PREFERRED_SIZE, 96,
-															GroupLayout.PREFERRED_SIZE)))
-									.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-					panel1Layout.setVerticalGroup(panel1Layout.createParallelGroup().addGroup(panel1Layout
-							.createSequentialGroup().addContainerGap()
-							.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-									.addComponent(label1).addComponent(objectIdField, GroupLayout.PREFERRED_SIZE,
-											GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGroup(panel1Layout.createParallelGroup()
-									.addGroup(panel1Layout.createSequentialGroup().addGap(16, 16, 16)
-											.addComponent(label2))
+					panel1Layout.setHorizontalGroup(
+						panel1Layout.createParallelGroup()
+							.addGroup(panel1Layout.createSequentialGroup()
+								.addGap(15, 15, 15)
+								.addGroup(panel1Layout.createParallelGroup()
+									.addComponent(label1, GroupLayout.Alignment.TRAILING)
+									.addComponent(label2, GroupLayout.Alignment.TRAILING)
+									.addComponent(label3, GroupLayout.Alignment.TRAILING)
+									.addComponent(label4, GroupLayout.Alignment.TRAILING)
+									.addComponent(label5, GroupLayout.Alignment.TRAILING)
+									.addComponent(label11, GroupLayout.Alignment.TRAILING)
+									.addComponent(label12, GroupLayout.Alignment.TRAILING))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addGroup(panel1Layout.createParallelGroup()
+									.addComponent(filterCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+										.addGroup(panel1Layout.createSequentialGroup()
+											.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+												.addComponent(fovField, GroupLayout.Alignment.LEADING)
+												.addComponent(decField, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+												.addComponent(raField, GroupLayout.Alignment.LEADING)
+												.addComponent(magLimitField))
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addGroup(panel1Layout.createParallelGroup()
+												.addComponent(label7)
+												.addComponent(label8)
+												.addComponent(label9)
+												.addComponent(label10)))
+										.addComponent(objectIdField)
+										.addComponent(catalogCombo, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE)))
+								.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					);
+					panel1Layout.setVerticalGroup(
+						panel1Layout.createParallelGroup()
+							.addGroup(panel1Layout.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(label1)
+									.addComponent(objectIdField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+								.addGroup(panel1Layout.createParallelGroup()
 									.addGroup(panel1Layout.createSequentialGroup()
-											.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-											.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-													.addComponent(raField, GroupLayout.PREFERRED_SIZE,
-															GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-													.addComponent(label7))))
-							.addGroup(panel1Layout.createParallelGroup()
-									.addGroup(panel1Layout.createSequentialGroup().addGap(16, 16, 16)
-											.addComponent(label3))
+										.addGap(16, 16, 16)
+										.addComponent(label2))
 									.addGroup(panel1Layout.createSequentialGroup()
-											.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-											.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-													.addComponent(decField, GroupLayout.PREFERRED_SIZE,
-															GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-													.addComponent(label8))))
-							.addGroup(panel1Layout.createParallelGroup()
-									.addGroup(panel1Layout.createSequentialGroup().addGap(16, 16, 16)
-											.addComponent(label4))
+										.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+										.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+											.addComponent(raField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addComponent(label7))))
+								.addGroup(panel1Layout.createParallelGroup()
 									.addGroup(panel1Layout.createSequentialGroup()
-											.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-											.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-													.addComponent(fovField, GroupLayout.PREFERRED_SIZE,
-															GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-													.addComponent(label9))))
-							.addGroup(panel1Layout.createParallelGroup()
-									.addGroup(panel1Layout.createSequentialGroup().addGap(16, 16, 16)
-											.addComponent(label5))
+										.addGap(16, 16, 16)
+										.addComponent(label3))
 									.addGroup(panel1Layout.createSequentialGroup()
-											.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-											.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-													.addComponent(magLimitField, GroupLayout.PREFERRED_SIZE,
-															GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-													.addComponent(label10))))
-							.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-							.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-									.addComponent(catalogCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-											GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+										.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+											.addComponent(decField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addComponent(label8))))
+								.addGroup(panel1Layout.createParallelGroup()
+									.addGroup(panel1Layout.createSequentialGroup()
+										.addGap(16, 16, 16)
+										.addComponent(label4))
+									.addGroup(panel1Layout.createSequentialGroup()
+										.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+										.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+											.addComponent(fovField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addComponent(label9))))
+								.addGroup(panel1Layout.createParallelGroup()
+									.addGroup(panel1Layout.createSequentialGroup()
+										.addGap(16, 16, 16)
+										.addComponent(label5))
+									.addGroup(panel1Layout.createSequentialGroup()
+										.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+										.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+											.addComponent(magLimitField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addComponent(label10))))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+								.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(catalogCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 									.addComponent(label11))
-							.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-							.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-									.addComponent(filterCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-											GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+								.addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(filterCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 									.addComponent(label12))
-							.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+								.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					);
 				}
 
-				// ======== panel2 ========
+				//======== panel2 ========
 				{
 
-					// ---- simbadButton ----
+					//---- simbadButton ----
 					simbadButton.setText(bundle.getString("VspDataUI.simbadButton.text"));
 					simbadButton.setToolTipText(bundle.getString("VspDataUI.simbadButton.toolTipText"));
 
-					// ---- cancelButton ----
+					//---- cancelButton ----
 					cancelButton.setText(bundle.getString("VspDataUI.cancelButton.text"));
 
-					// ---- catalogButton ----
+					//---- catalogButton ----
 					catalogButton.setText("Catalog");
 					catalogButton.setToolTipText(bundle.getString("VspDataUI.catalogButton.toolTipText"));
 
-					// ---- saveButton ----
+					//---- saveButton ----
 					saveButton.setText("Save");
 					saveButton.setToolTipText(bundle.getString("VspDataUI.saveButton.toolTipText"));
 
 					GroupLayout panel2Layout = new GroupLayout(panel2);
 					panel2.setLayout(panel2Layout);
-					panel2Layout.setHorizontalGroup(panel2Layout.createParallelGroup()
-							.addGroup(panel2Layout.createSequentialGroup().addContainerGap()
-									.addGroup(panel2Layout.createParallelGroup()
-											.addComponent(saveButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-											.addComponent(catalogButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-											.addComponent(simbadButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-											.addComponent(cancelButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
-									.addContainerGap()));
-					panel2Layout
-							.setVerticalGroup(panel2Layout.createParallelGroup()
-									.addGroup(panel2Layout.createSequentialGroup().addContainerGap()
-											.addComponent(simbadButton)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-											.addComponent(catalogButton)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-											.addComponent(saveButton)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
-													GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-											.addComponent(cancelButton).addContainerGap()));
+					panel2Layout.setHorizontalGroup(
+						panel2Layout.createParallelGroup()
+							.addGroup(panel2Layout.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(panel2Layout.createParallelGroup()
+									.addComponent(saveButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+									.addComponent(catalogButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+									.addComponent(simbadButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+									.addComponent(cancelButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
+								.addContainerGap())
+					);
+					panel2Layout.setVerticalGroup(
+						panel2Layout.createParallelGroup()
+							.addGroup(panel2Layout.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(simbadButton)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+								.addComponent(catalogButton)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+								.addComponent(saveButton)
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(cancelButton)
+								.addContainerGap())
+					);
 				}
 
-				// ======== panel3 ========
+				//======== panel3 ========
 				{
 					panel3.setBorder(new TitledBorder(bundle.getString("VspDataUI.panel3.border")));
 					panel3.setPreferredSize(new Dimension(190, 164));
 					panel3.setToolTipText(bundle.getString("VspDataUI.panel3.toolTipText"));
 
-					// ---- idLabel ----
+					//---- idLabel ----
 					idLabel.setText(bundle.getString("VspDataUI.idLabel.text_2"));
 
-					// ---- raLabel ----
+					//---- raLabel ----
 					raLabel.setText(bundle.getString("VspDataUI.raLabel.text"));
 
-					// ---- decLabel ----
+					//---- decLabel ----
 					decLabel.setText(bundle.getString("VspDataUI.decLabel.text"));
 
-					// ---- simbadIdLabel ----
+					//---- simbadIdLabel ----
 					simbadIdLabel.setText(".");
 
-					// ---- simbadRaLabel ----
+					//---- simbadRaLabel ----
 					simbadRaLabel.setText("HH:MM:SS.SS");
 
-					// ---- simbadDecLabel ----
+					//---- simbadDecLabel ----
 					simbadDecLabel.setText("DD:MM:SS.SS");
 
 					GroupLayout panel3Layout = new GroupLayout(panel3);
 					panel3.setLayout(panel3Layout);
-					panel3Layout.setHorizontalGroup(panel3Layout.createParallelGroup()
+					panel3Layout.setHorizontalGroup(
+						panel3Layout.createParallelGroup()
 							.addGroup(panel3Layout.createSequentialGroup()
-									.addGroup(panel3Layout.createParallelGroup()
-											.addGroup(panel3Layout.createSequentialGroup().addGap(25, 25, 25)
-													.addGroup(panel3Layout.createParallelGroup()
-															.addComponent(raLabel, GroupLayout.Alignment.TRAILING)
-															.addComponent(decLabel, GroupLayout.Alignment.TRAILING)))
-											.addGroup(panel3Layout.createSequentialGroup().addContainerGap()
-													.addComponent(idLabel)))
-									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-									.addGroup(panel3Layout.createParallelGroup().addComponent(simbadIdLabel)
-											.addComponent(simbadRaLabel).addComponent(simbadDecLabel))
-									.addGap(0, 106, Short.MAX_VALUE)));
-					panel3Layout.setVerticalGroup(panel3Layout.createParallelGroup()
-							.addGroup(panel3Layout.createSequentialGroup().addContainerGap()
-									.addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-											.addComponent(simbadIdLabel).addComponent(idLabel))
-									.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-									.addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-											.addComponent(raLabel).addComponent(simbadRaLabel))
-									.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-									.addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-											.addComponent(decLabel).addComponent(simbadDecLabel))
-									.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+								.addGroup(panel3Layout.createParallelGroup()
+									.addGroup(panel3Layout.createSequentialGroup()
+										.addGap(25, 25, 25)
+										.addGroup(panel3Layout.createParallelGroup()
+											.addComponent(raLabel, GroupLayout.Alignment.TRAILING)
+											.addComponent(decLabel, GroupLayout.Alignment.TRAILING)))
+									.addGroup(panel3Layout.createSequentialGroup()
+										.addContainerGap()
+										.addComponent(idLabel)))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addGroup(panel3Layout.createParallelGroup()
+									.addComponent(simbadIdLabel)
+									.addComponent(simbadRaLabel)
+									.addComponent(simbadDecLabel))
+								.addGap(0, 106, Short.MAX_VALUE))
+					);
+					panel3Layout.setVerticalGroup(
+						panel3Layout.createParallelGroup()
+							.addGroup(panel3Layout.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(simbadIdLabel)
+									.addComponent(idLabel))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+								.addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(raLabel)
+									.addComponent(simbadRaLabel))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+								.addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(decLabel)
+									.addComponent(simbadDecLabel))
+								.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					);
 				}
 
-				// ======== panel4 ========
+				//======== panel4 ========
 				{
 					panel4.setBorder(new TitledBorder(bundle.getString("VspDataUI.panel4.border")));
 					panel4.setPreferredSize(new Dimension(190, 164));
 					panel4.setToolTipText(bundle.getString("VspDataUI.panel4.toolTipText"));
 
-					// ---- idLabel2 ----
+					//---- idLabel2 ----
 					idLabel2.setText(bundle.getString("VspDataUI.idLabel2.text"));
 
-					// ---- idLabel3 ----
+					//---- idLabel3 ----
 					idLabel3.setText(bundle.getString("VspDataUI.idLabel3.text"));
 
-					// ---- idLabel4 ----
+					//---- idLabel4 ----
 					idLabel4.setText(bundle.getString("VspDataUI.idLabel4.text"));
 
-					// ---- idLabel5 ----
+					//---- idLabel5 ----
 					idLabel5.setText(bundle.getString("VspDataUI.idLabel5.text"));
 
-					// ---- simbadMagBLabel ----
+					//---- simbadMagBLabel ----
 					simbadMagBLabel.setText(".");
 
-					// ---- simbadMagVLabel ----
+					//---- simbadMagVLabel ----
 					simbadMagVLabel.setText(".");
 
-					// ---- simbadMagRLabel ----
+					//---- simbadMagRLabel ----
 					simbadMagRLabel.setText(".");
 
-					// ---- simbadMagILabel ----
+					//---- simbadMagILabel ----
 					simbadMagILabel.setText(".");
 
 					GroupLayout panel4Layout = new GroupLayout(panel4);
 					panel4.setLayout(panel4Layout);
-					panel4Layout.setHorizontalGroup(panel4Layout.createParallelGroup()
-							.addGroup(panel4Layout.createSequentialGroup().addContainerGap()
-									.addGroup(panel4Layout.createParallelGroup()
-											.addComponent(idLabel2, GroupLayout.Alignment.TRAILING)
-											.addComponent(idLabel3, GroupLayout.Alignment.TRAILING)
-											.addComponent(idLabel4, GroupLayout.Alignment.TRAILING)
-											.addComponent(idLabel5, GroupLayout.Alignment.TRAILING))
-									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-									.addGroup(panel4Layout.createParallelGroup().addComponent(simbadMagBLabel)
-											.addComponent(simbadMagVLabel).addComponent(simbadMagRLabel)
-											.addComponent(simbadMagILabel))
-									.addContainerGap(44, Short.MAX_VALUE)));
-					panel4Layout.setVerticalGroup(panel4Layout.createParallelGroup()
-							.addGroup(panel4Layout.createSequentialGroup().addContainerGap()
-									.addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-											.addComponent(idLabel2).addComponent(simbadMagBLabel))
-									.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-									.addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-											.addComponent(idLabel3).addComponent(simbadMagVLabel))
-									.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-									.addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-											.addComponent(idLabel4).addComponent(simbadMagRLabel))
-									.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-									.addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-											.addComponent(idLabel5).addComponent(simbadMagILabel))
-									.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+					panel4Layout.setHorizontalGroup(
+						panel4Layout.createParallelGroup()
+							.addGroup(panel4Layout.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(panel4Layout.createParallelGroup()
+									.addComponent(idLabel2, GroupLayout.Alignment.TRAILING)
+									.addComponent(idLabel3, GroupLayout.Alignment.TRAILING)
+									.addComponent(idLabel4, GroupLayout.Alignment.TRAILING)
+									.addComponent(idLabel5, GroupLayout.Alignment.TRAILING))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+								.addGroup(panel4Layout.createParallelGroup()
+									.addComponent(simbadMagBLabel)
+									.addComponent(simbadMagVLabel)
+									.addComponent(simbadMagRLabel)
+									.addComponent(simbadMagILabel))
+								.addContainerGap(44, Short.MAX_VALUE))
+					);
+					panel4Layout.setVerticalGroup(
+						panel4Layout.createParallelGroup()
+							.addGroup(panel4Layout.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(idLabel2)
+									.addComponent(simbadMagBLabel))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+								.addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(idLabel3)
+									.addComponent(simbadMagVLabel))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+								.addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(idLabel4)
+									.addComponent(simbadMagRLabel))
+								.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+								.addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+									.addComponent(idLabel5)
+									.addComponent(simbadMagILabel))
+								.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					);
 				}
 
 				GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
 				contentPanel.setLayout(contentPanelLayout);
-				contentPanelLayout.setHorizontalGroup(contentPanelLayout.createParallelGroup()
+				contentPanelLayout.setHorizontalGroup(
+					contentPanelLayout.createParallelGroup()
 						.addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-								.addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-										.addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addComponent(panel3, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
-								.addGap(18, 18, 18)
-								.addGroup(contentPanelLayout.createParallelGroup()
-										.addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE)
-										.addGroup(
-												contentPanelLayout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE)
-														.addComponent(panel4, GroupLayout.PREFERRED_SIZE, 116,
-																GroupLayout.PREFERRED_SIZE)))));
-				contentPanelLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] { panel2, panel4 });
-				contentPanelLayout.setVerticalGroup(contentPanelLayout.createParallelGroup().addGroup(contentPanelLayout
-						.createSequentialGroup()
-						.addGroup(contentPanelLayout.createParallelGroup()
-								.addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(panel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(contentPanelLayout.createParallelGroup()
+							.addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+								.addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(panel3, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
+							.addGap(18, 18, 18)
+							.addGroup(contentPanelLayout.createParallelGroup()
+								.addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addGroup(contentPanelLayout.createSequentialGroup()
+									.addGap(0, 0, Short.MAX_VALUE)
+									.addComponent(panel4, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))))
+				);
+				contentPanelLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {panel2, panel4});
+				contentPanelLayout.setVerticalGroup(
+					contentPanelLayout.createParallelGroup()
+						.addGroup(contentPanelLayout.createSequentialGroup()
+							.addGroup(contentPanelLayout.createParallelGroup()
+								.addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(panel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addGroup(contentPanelLayout.createParallelGroup()
 								.addComponent(panel4, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
 								.addComponent(panel3, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+							.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+				);
 			}
 			dialogPane.add(contentPanel, BorderLayout.CENTER);
 		}

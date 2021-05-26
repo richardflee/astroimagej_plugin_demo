@@ -6,7 +6,7 @@ new FormModel {
 	"i18n.keyPrefix": "VspDataUI"
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			"title": "VSP Demo v0.1"
 			"resizable": false
