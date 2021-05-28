@@ -1,6 +1,12 @@
 # Compiled class file
 *.class
 
+# fits and txt
+*.txt
+*.fit
+*.fits
+*.fts
+
 # Log file
 *.log
 
@@ -29,6 +35,10 @@ bin
 */.classpath
 */.project
 */.settings
+/.settings/
+/.project/
+/.classpath/
+
 
 /.metadata/
 /target/
