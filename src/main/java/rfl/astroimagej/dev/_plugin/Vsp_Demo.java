@@ -25,7 +25,7 @@ import rfl.astroimagej.dev.fileio.RaDecFileWriter;
  */
 public class Vsp_Demo implements PlugIn  {
 	
-	private final static String VERSION_NUMBER = "WIN10-1.00b";
+	private final static String VERSION_NUMBER = "WIN10-1.00b-SNAPSHOT";
 	
 	/**
 	 * ImageJ calls the run method when user selects AstroImageJ/Plugin/Vsp_Demo menu option

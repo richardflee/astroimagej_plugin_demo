@@ -113,8 +113,8 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, par l {comp saveButton::::92:x, comp catalogButton::l::92:x, comp simbadButton::::92:x, comp closeButton::l::92:x}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, comp simbadButton:::p::p, space u:::p, comp catalogButton:::p::p, space u:::p, comp saveButton:::p::p, space :::x, comp closeButton:::p::p, space :::p}}"
+						"$horizontalGroup": "par l {seq l {space :::p, par l {comp saveButton::::92:x, comp catalogButton::l::92:x, comp simbadButton::::92:x, comp cancelButton::l::92:x}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp simbadButton:::p::p, space u:::p, comp catalogButton:::p::p, space u:::p, comp saveButton:::p::p, space :::x, comp cancelButton:::p::p, space :::p}}"
 					} ) {
 						name: "panel2"
 						add( new FormComponent( "javax.swing.JButton" ) {
@@ -123,8 +123,8 @@ new FormModel {
 							"toolTipText": new FormMessage( null, "VspDataUI.simbadButton.toolTipText" )
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "closeButton"
-							"text": "Close"
+							name: "cancelButton"
+							"text": new FormMessage( null, "VspDataUI.cancelButton.text" )
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "catalogButton"
