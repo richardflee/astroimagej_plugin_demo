@@ -179,8 +179,8 @@ public class CatalogFormUI extends JDialog {
 		// Save button => save properties file + inform user
 		saveButton.addActionListener(e -> savePropertiesFile());
 
-		// close => lose unsaved changes
-		cancelButton.addActionListener(e -> System.exit(0));
+		// close dialog (only), don't save changes
+		closeButton.addActionListener(e -> dispose());
 	}
 
 	/**
@@ -396,7 +396,7 @@ public class CatalogFormUI extends JDialog {
 		label12 = new JLabel();
 		panel2 = new JPanel();
 		simbadButton = new JButton();
-		cancelButton = new JButton();
+		closeButton = new JButton();
 		catalogButton = new JButton();
 		saveButton = new JButton();
 		panel3 = new JPanel();
@@ -590,8 +590,8 @@ public class CatalogFormUI extends JDialog {
 					simbadButton.setText(bundle.getString("VspDataUI.simbadButton.text"));
 					simbadButton.setToolTipText(bundle.getString("VspDataUI.simbadButton.toolTipText"));
 
-					//---- cancelButton ----
-					cancelButton.setText(bundle.getString("VspDataUI.cancelButton.text"));
+					//---- closeButton ----
+					closeButton.setText("Close");
 
 					//---- catalogButton ----
 					catalogButton.setText("Catalog");
@@ -611,7 +611,7 @@ public class CatalogFormUI extends JDialog {
 									.addComponent(saveButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
 									.addComponent(catalogButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
 									.addComponent(simbadButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-									.addComponent(cancelButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
+									.addComponent(closeButton, GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
 								.addContainerGap())
 					);
 					panel2Layout.setVerticalGroup(
@@ -624,7 +624,7 @@ public class CatalogFormUI extends JDialog {
 								.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 								.addComponent(saveButton)
 								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(cancelButton)
+								.addComponent(closeButton)
 								.addContainerGap())
 					);
 				}
@@ -827,7 +827,7 @@ public class CatalogFormUI extends JDialog {
 	private JLabel label12;
 	private JPanel panel2;
 	private JButton simbadButton;
-	private JButton cancelButton;
+	private JButton closeButton;
 	private JButton catalogButton;
 	private JButton saveButton;
 	private JPanel panel3;
