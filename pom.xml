@@ -14,7 +14,7 @@
 
 	<groupId>rfl.astroimagej.dev</groupId>
 	<artifactId>vsp_demo</artifactId>
-	<version>WIN10-1.00b</version>
+	<version>WIN10-1.00</version>
 
 	<name>VSP Demo</name>
 	<description>A Maven project implementing an ImageJ 1.x plugin.</description>
