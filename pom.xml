@@ -14,7 +14,7 @@
 
 	<groupId>rfl.astroimagej.dev</groupId>
 	<artifactId>vsp_demo</artifactId>
-	<version>1.00a</version>
+	<version>ONE_JAR-1.00a</version>
 
 	<!-- Output to jar format -->
 	<packaging>jar</packaging>
