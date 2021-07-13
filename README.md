@@ -3,18 +3,18 @@
 ### AstroImageJ plugin to query AAVSO Variable Star Plotter database
 
 README file for Vsp_Demo astroimage java plugin to create radec files.<br/>
-The current version (WIN10-1.00) is resricted to queries of the Variable Star Plotter database. <br/><br/>
+The current version (vsp_demo_ONEJAR-1.00) is resricted to queries of the Variable Star Plotter database. <br/><br/>
 See the User Guide pdf (below) for software setup and user instructions.
 
 **Download files:**
--  vsp_demo-WIN10-X.XX.jar: win 10 compiled ImageJ plugin jar file
+-  vsp_demo_ONEJAR-1.XX.jar: win 10 compiled ImageJ plugin jar file
 - radec.zip: compressed folder containing sample radec txt and DSS fis files
 -  User Guide to VSP AstroImageJ Plugin.pdf
 
 Click 'Releases' link on the right side of the repo Code page<br/>
 In Releases page, latest release:<br/>
 Click radec.zip and User Guide pdf links to download<br/>
-Open Assets, click vsp_demo-WIN10-X.XX.jar to download plugin jar file<br/>
+Open Assets, click vsp_demo_ONEJAR-1.XX.jar to download plugin jar file<br/>
 
 **Software Notes**
 
@@ -22,23 +22,21 @@ VSP_DEMO is an ImageJ plugin, ref: https://imagej.net/Developing_Plugins_for_Ima
 developed to support AstroImageJ photometry software. It  is a Java 8 application, developed on Win10 OS using Eclipse IDE. <BR/>
 Maven-based build automation, using an edited POM.xlm file supplied with 
 Process_Pixels - ImageJ demo software.  <br/>
-External libraries:  To handle json data, Vsp_Demo uses the .plugins/jackson jars, included in AIJ installation.<br/>
+External libraries: To eliminate external dependency issues, Jackson libraries are packaged into a onejar (uber-jar) binary.<br/>
 Refer source code for javadoc and  software comments. <br/>
 
 The user form is configured as  a modal dialog to block user access to the AIJ toolbar. In testing, accessing
 AIJ toolbar with the dialog still open could cause a complete system crash, requiring a power cycle to reset. <br/>
 
-Currently, Windows-AIJ is bundled with Java 7.  Refer user guide for (hopefully!) short-term work-arounds,
- either installing system wide jre 8 or simply downloading and running example files without installing the plugin.
+Currently, Windows and Linux AIJ  downloads are bundled with Java 7.  Refer user guide for work-around pending update AJJ to Java16.
  
-The software is intended as 'a capability demonstrator' and is currently restricted to querying the VSP
- database (hence the name). <br/>
+The software is intended as 'a capability demonstrator' and is currently restricted to querying the VSP database. <br/>
  The software includes APASS 'dummy' controls & developing APASS queries  on the Vizier server 
- is probably the next development stage.
+ will be one of the next development stages.
  
  **Software Build**
  
- Tested on Win10 PC / Eclipse IDE,  expect same procedure to apply on Linux OS.
+ Tested on Win10 PC  / Eclipse IDE,  expect same procedure to apply on Linux OS.
  
  1. Navigate to the latest GitHub release page https://github.com/richardflee/vsp_astroimagej_plugin/releases
  2. User Assets =>  click *download source code (zip)* to download vsp_astroimagej_plugin-WIN10-1.00.zip
